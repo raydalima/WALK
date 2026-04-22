@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}Pré-cadastro - Cursinho Popular{% endblock %}
+
+{% block content %}
+<style>
+.pre-card { border: 0; border-radius: 18px; box-shadow: 0 18px 48px rgba(24, 52, 98, 0.08); overflow: hidden; }
+.pre-hero { background: linear-gradient(135deg, #1752c3, #2b7cff); color: #fff; padding: 28px; }
+.pre-section { border: 1px solid rgba(23, 82, 195, 0.08); border-radius: 16px; padding: 22px; background: #fff; }
+.pre-section h5 { color: #1752c3; font-weight: 700; margin-bottom: 14px; }
+.pre-help { color: #5f6b7a; font-size: .95rem; }
+.pre-card .form-control, .pre-card .form-select { border-radius: 12px; padding: 10px 12px; }
+</style>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-xl-10">
+      <div class="pre-card">
+        <div class="pre-hero">
+          <h1 class="h3 mb-2">Pré-cadastro de aluno</h1>
+          <p class="mb-0">
+            Preencha este formulário para que a equipe administrativa analise seu perfil e use essas informações no processo de matrícula.
+          </p>
+        </div>
+
+        <div class="p-4 p-lg-5">
+          {% with f=form %}
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if f.non_field_errors %}
+              <div class="alert alert-danger">{{ f.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="pre-section mb-4">
+              <h5>1. Identificação e contato</h5>
+              <p class="pre-help">Esses dados ajudam a equipe a validar o cadastro e entrar em contato com você.</p>
+              <div class="row g-3">
+                <div class="col-md-8">
+                  {{ f.name.label_tag }}{{ f.name }}
+                  {% if f.name.errors %}<div class="text-danger small">{{ f.name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.social_name.label_tag }}{{ f.social_name }}
+                  {% if f.social_name.errors %}<div class="text-danger small">{{ f.social_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.gender.label_tag }}{{ f.gender }}
+                  {% if f.gender.errors %}<div class="text-danger small">{{ f.gender.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.race_self_declaration.label_tag }}{{ f.race_self_declaration }}
+                  {% if f.race_self_declaration.errors %}<div class="text-danger small">{{ f.race_self_declaration.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.pronouns.label_tag }}{{ f.pronouns }}
+                  {% if f.pronouns.errors %}<div class="text-danger small">{{ f.pronouns.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                  {{ f.birth_date.label_tag }}{{ f.birth_date }}
+                  {% if f.birth_date.errors %}<div class="text-danger small">{{ f.birth_date.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                  {{ f.cpf.label_tag }}{{ f.cpf }}
+                  {% if f.cpf.errors %}<div class="text-danger small">{{ f.cpf.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                  {{ f.rg.label_tag }}{{ f.rg }}
+                  {% if f.rg.errors %}<div class="text-danger small">{{ f.rg.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                  {{ f.zip_code.label_tag }}{{ f.zip_code }}
+                  {% if f.zip_code.errors %}<div class="text-danger small">{{ f.zip_code.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ f.phone.label_tag }}{{ f.phone }}
+                  {% if f.phone.errors %}<div class="text-danger small">{{ f.phone.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ f.email.label_tag }}{{ f.email }}
+                  {% if f.email.errors %}<div class="text-danger small">{{ f.email.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-7">
+                  {{ f.address.label_tag }}{{ f.address }}
+                  {% if f.address.errors %}<div class="text-danger small">{{ f.address.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-3">
+                  {{ f.city.label_tag }}{{ f.city }}
+                  {% if f.city.errors %}<div class="text-danger small">{{ f.city.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-2">
+                  {{ f.state.label_tag }}{{ f.state }}
+                  {% if f.state.errors %}<div class="text-danger small">{{ f.state.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="pre-section mb-4">
+              <h5>2. Responsável legal</h5>
+              <p class="pre-help">Preencha principalmente se o candidato for menor de idade.</p>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  {{ f.responsible_name.label_tag }}{{ f.responsible_name }}
+                  {% if f.responsible_name.errors %}<div class="text-danger small">{{ f.responsible_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ f.responsible_phone.label_tag }}{{ f.responsible_phone }}
+                  {% if f.responsible_phone.errors %}<div class="text-danger small">{{ f.responsible_phone.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.responsible_cpf.label_tag }}{{ f.responsible_cpf }}
+                  {% if f.responsible_cpf.errors %}<div class="text-danger small">{{ f.responsible_cpf.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.responsible_rg.label_tag }}{{ f.responsible_rg }}
+                  {% if f.responsible_rg.errors %}<div class="text-danger small">{{ f.responsible_rg.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.responsible_relationship.label_tag }}{{ f.responsible_relationship }}
+                  {% if f.responsible_relationship.errors %}<div class="text-danger small">{{ f.responsible_relationship.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-8">
+                  {{ f.responsible_address.label_tag }}{{ f.responsible_address }}
+                  {% if f.responsible_address.errors %}<div class="text-danger small">{{ f.responsible_address.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.responsible_relationship_other.label_tag }}{{ f.responsible_relationship_other }}
+                  {% if f.responsible_relationship_other.errors %}<div class="text-danger small">{{ f.responsible_relationship_other.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="pre-section mb-4">
+              <h5>3. Perfil escolar</h5>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  {{ f.school_situation.label_tag }}{{ f.school_situation }}
+                  {% if f.school_situation.errors %}<div class="text-danger small">{{ f.school_situation.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.school_type.label_tag }}{{ f.school_type }}
+                  {% if f.school_type.errors %}<div class="text-danger small">{{ f.school_type.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.graduation_year.label_tag }}{{ f.graduation_year }}
+                  {% if f.graduation_year.errors %}<div class="text-danger small">{{ f.graduation_year.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.has_taken_enem.label_tag }}{{ f.has_taken_enem }}
+                  {% if f.has_taken_enem.errors %}<div class="text-danger small">{{ f.has_taken_enem.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-8">
+                  {{ f.intended_course.label_tag }}{{ f.intended_course }}
+                  {% if f.intended_course.errors %}<div class="text-danger small">{{ f.intended_course.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="pre-section mb-4">
+              <h5>4. Perfil socioeconômico</h5>
+              <p class="pre-help">Essas informações ajudam a coordenação a entender melhor a realidade dos estudantes e organizar o apoio necessário.</p>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  {{ f.family_income_range.label_tag }}{{ f.family_income_range }}
+                  {% if f.family_income_range.errors %}<div class="text-danger small">{{ f.family_income_range.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.household_members.label_tag }}{{ f.household_members }}
+                  {% if f.household_members.errors %}<div class="text-danger small">{{ f.household_members.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.housing_status.label_tag }}{{ f.housing_status }}
+                  {% if f.housing_status.errors %}<div class="text-danger small">{{ f.housing_status.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.has_internet_at_home.label_tag }}{{ f.has_internet_at_home }}
+                  {% if f.has_internet_at_home.errors %}<div class="text-danger small">{{ f.has_internet_at_home.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.has_device.label_tag }}{{ f.has_device }}
+                  {% if f.has_device.errors %}<div class="text-danger small">{{ f.has_device.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.has_private_study_space.label_tag }}{{ f.has_private_study_space }}
+                  {% if f.has_private_study_space.errors %}<div class="text-danger small">{{ f.has_private_study_space.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.works_currently.label_tag }}{{ f.works_currently }}
+                  {% if f.works_currently.errors %}<div class="text-danger small">{{ f.works_currently.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.receives_social_benefit.label_tag }}{{ f.receives_social_benefit }}
+                  {% if f.receives_social_benefit.errors %}<div class="text-danger small">{{ f.receives_social_benefit.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  {{ f.transportation_type.label_tag }}{{ f.transportation_type }}
+                  {% if f.transportation_type.errors %}<div class="text-danger small">{{ f.transportation_type.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ f.weekly_study_hours.label_tag }}{{ f.weekly_study_hours }}
+                  {% if f.weekly_study_hours.errors %}<div class="text-danger small">{{ f.weekly_study_hours.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="pre-section mb-4">
+              <h5>5. Motivação</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  {{ f.how_did_you_hear.label_tag }}{{ f.how_did_you_hear }}
+                  {% if f.how_did_you_hear.errors %}<div class="text-danger small">{{ f.how_did_you_hear.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                  {{ f.message.label_tag }}{{ f.message }}
+                  {% if f.message.errors %}<div class="text-danger small">{{ f.message.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                  {{ f.why_join.label_tag }}{{ f.why_join }}
+                  {% if f.why_join.errors %}<div class="text-danger small">{{ f.why_join.errors.0 }}</div>{% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-check mb-4">
+              {{ f.consent }}
+              <label class="form-check-label" for="{{ f.consent.id_for_label }}">{{ f.consent.label }}</label>
+              {% if f.consent.errors %}<div class="text-danger small">{{ f.consent.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-md-center">
+              <div class="pre-help">
+                Após o envio, a equipe administrativa poderá analisar este cadastro e usar essas informações no processo de matrícula.
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg">Enviar pré-cadastro</button>
+            </div>
+          </form>
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

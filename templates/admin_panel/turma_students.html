@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Alunos da Turma{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Alunos da {{ turma.nome }} ({{ turma.ano }})</h2>
+    <a href="{% url 'admin_panel:turmas_list' %}" class="btn btn-secondary">Voltar</a>
+  </div>
+  <div class="card"><div class="card-body">
+    <ul class="list-group">
+      {% for enrollment in enrollments %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ enrollment.student.user.get_full_name|default:enrollment.student.user.username }}</strong>
+            <div class="text-muted small">{{ enrollment.student.user.email }}</div>
+          </div>
+          <span class="badge bg-primary">{{ enrollment.student.get_status_display }}</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">Nenhum aluno vinculado a esta turma.</li>
+      {% endfor %}
+    </ul>
+  </div></div>
+</div>
+{% endblock %}

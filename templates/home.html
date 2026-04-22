@@ -1,0 +1,91 @@
+{% comment %}...existing code...{% endcomment %}
+
+<section id="pre-matricula">
+  <div class="container py-4">
+    <h2 class="mb-4 fw-bold fs-2 text-primary">Pré-matrícula</h2>
+    <form method="post" action="" class="needs-validation" novalidate>
+      {% csrf_token %}
+
+      {% if pre_registration_form %}
+        {% with f=pre_registration_form %}
+      {% elif form %}
+        {% with f=form %}
+      {% endif %}
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">1. Dados do estudante</legend>
+        <div class="row g-3">
+          <div class="col-md-6">{{ f.name.label_tag }}{{ f.name }}</div>
+          <div class="col-md-6">{{ f.social_name.label_tag }}{{ f.social_name }}</div>
+          <div class="col-md-4">{{ f.gender.label_tag }}{{ f.gender }}</div>
+          <div class="col-md-4">{{ f.race_self_declaration.label_tag }}{{ f.race_self_declaration }}</div>
+          <div class="col-md-4">{{ f.pronouns.label_tag }}{{ f.pronouns }}</div>
+          <div class="col-md-4">{{ f.birth_date.label_tag }}{{ f.birth_date }}</div>
+          <div class="col-md-4">{{ f.cpf.label_tag }}{{ f.cpf }}</div>
+          <div class="col-md-4">{{ f.rg.label_tag }}{{ f.rg }}</div>
+          <div class="col-md-6">{{ f.phone.label_tag }}{{ f.phone }}</div>
+          <div class="col-md-6">{{ f.email.label_tag }}{{ f.email }}</div>
+          <div class="col-md-8">{{ f.address.label_tag }}{{ f.address }}</div>
+          <div class="col-md-2">{{ f.city.label_tag }}{{ f.city }}</div>
+          <div class="col-md-1">{{ f.state.label_tag }}{{ f.state }}</div>
+          <div class="col-md-1">{{ f.zip_code.label_tag }}{{ f.zip_code }}</div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">2. Dados do responsável (se menor de idade)</legend>
+        <div class="row g-3">
+          <div class="col-md-6">{{ f.responsible_name.label_tag }}{{ f.responsible_name }}</div>
+          <div class="col-md-6">{{ f.responsible_phone.label_tag }}{{ f.responsible_phone }}</div>
+          <div class="col-md-4">{{ f.responsible_cpf.label_tag }}{{ f.responsible_cpf }}</div>
+          <div class="col-md-4">{{ f.responsible_rg.label_tag }}{{ f.responsible_rg }}</div>
+          <div class="col-md-4">{{ f.responsible_address.label_tag }}{{ f.responsible_address }}</div>
+          <div class="col-md-6">{{ f.responsible_relationship.label_tag }}{{ f.responsible_relationship }}</div>
+          <div class="col-md-6">{{ f.responsible_relationship_other.label_tag }}{{ f.responsible_relationship_other }}</div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">3. Perfil Escolar</legend>
+        <div class="row g-3">
+          <div class="col-md-6">{{ f.school_situation.label_tag }}{{ f.school_situation }}</div>
+          <div class="col-md-6">{{ f.school_type.label_tag }}{{ f.school_type }}</div>
+          <div class="col-md-4">{{ f.graduation_year.label_tag }}{{ f.graduation_year }}</div>
+          <div class="col-md-4">{{ f.has_taken_enem.label_tag }}{{ f.has_taken_enem }}</div>
+          <div class="col-md-4">{{ f.intended_course.label_tag }}{{ f.intended_course }}</div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">4. Perfil Socioeconômico</legend>
+        <div class="row g-3">
+          <div class="col-md-4">{{ f.family_income_range.label_tag }}{{ f.family_income_range }}</div>
+          <div class="col-md-4">{{ f.household_members.label_tag }}{{ f.household_members }}</div>
+          <div class="col-md-4">{{ f.has_internet_at_home.label_tag }}{{ f.has_internet_at_home }}</div>
+          <div class="col-md-4">{{ f.has_device.label_tag }}{{ f.has_device }}</div>
+          <div class="col-md-4">{{ f.works_currently.label_tag }}{{ f.works_currently }}</div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">5. Divulgação e Motivação</legend>
+        <div class="row g-3">
+          <div class="col-md-6">{{ f.how_did_you_hear.label_tag }}{{ f.how_did_you_hear }}</div>
+          <div class="col-md-6">{{ f.why_join.label_tag }}{{ f.why_join }}</div>
+          <div class="col-md-12">{{ f.message.label_tag }}{{ f.message }}</div>
+        </div>
+      </fieldset>
+
+      <div class="form-check mb-3">
+        {{ f.consent }}
+        {{ f.consent.label_tag }}
+      </div>
+
+      <button type="submit" class="btn btn-primary fs-5 px-4 py-2">Enviar</button>
+
+      {% endwith %}
+    </form>
+  </div>
+</section>
+
+{% comment %}...existing code...{% endcomment %}

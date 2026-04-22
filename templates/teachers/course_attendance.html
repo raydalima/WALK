@@ -1,0 +1,48 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Frequência{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">{{ course.nome|default:course.name|default:course }} — Lista de presença</h2>
+    <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_attendance_csv' course.id %}">Baixar CSV</a>
+  </div>
+  <div class="t-card__body">
+    {% if enrollments %}
+      <form method="post">
+        {% csrf_token %}
+        <ul class="t-list">
+          {% for e in enrollments %}
+            {% if e.student %}
+              <li class="t-list__item">
+                <div class="t-list__main">
+                  <div class="t-list__title">
+                    {{ e.student.user.get_full_name|default:e.student.user.username|default:e.student }}
+                  </div>
+                  <div class="t-list__subtitle">{{ e.student.user.email }}</div>
+                </div>
+                <div class="t-list__actions">
+                  <label class="t-badge">
+                    <input type="checkbox" name="present" value="{{ e.student.id }}" style="margin-right:8px;">
+                    Presente
+                  </label>
+                </div>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        <div style="margin-top: 14px;">
+          <button class="t-btn t-btn--primary" type="submit">Salvar (sessão)</button>
+          <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_students' course.id %}">Voltar</a>
+        </div>
+      </form>
+      <div class="t-empty" style="margin-top: 14px;">
+        Observação: esta frequência é apenas para uso imediato (não persiste no banco sem um model de presença).
+      </div>
+    {% else %}
+      <div class="t-empty">Nenhum aluno para gerar frequência.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

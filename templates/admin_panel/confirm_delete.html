@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmar remoção{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 720px;">
+  <div class="card border-danger">
+    <div class="card-body">
+      <h2 class="h4 text-danger">Confirmar remoção</h2>
+      <p>Tem certeza que deseja remover <strong>{{ object }}</strong>?</p>
+      <form method="post" class="d-flex gap-2">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Remover</button>
+        <a href="{% url cancel_url %}" class="btn btn-outline-secondary">Cancelar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

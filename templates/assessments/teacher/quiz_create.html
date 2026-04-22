@@ -1,0 +1,19 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Novo questionário{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">Criar questionário</h2>
+  </div>
+  <div class="t-card__body">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="t-btn t-btn--primary" type="submit">Salvar</button>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:quiz_list' %}">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

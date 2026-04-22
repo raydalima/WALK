@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Relatórios Acadêmicos</h1>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card"><div class="card-body">
+        <h5>Disciplinas</h5>
+        <ul>
+          {% for course in courses %}
+            <li>{{ course }} <a href="{% url 'admin_panel:relatorio_alunos' course.id %}" class="btn btn-primary btn-sm">Ver alunos</a></li>
+          {% empty %}
+            <li>Nenhuma disciplina encontrada.</li>
+          {% endfor %}
+        </ul>
+      </div></div>
+    </div>
+    <div class="col-md-6">
+      <div class="card"><div class="card-body">
+        <h5>Turmas</h5>
+        <ul>
+          {% for turma in turmas %}
+            <li>{{ turma }} <a href="{% url 'admin_panel:turma_students' turma.id %}" class="btn btn-primary btn-sm">Ver alunos</a></li>
+          {% empty %}
+            <li>Nenhuma turma encontrada.</li>
+          {% endfor %}
+        </ul>
+      </div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

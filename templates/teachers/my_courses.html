@@ -1,0 +1,43 @@
+{% extends 'teachers/base.html' %}
+{% block title %}Minhas Disciplinas - Professor - WALK{% endblock %}
+{% block page_title %}Minhas Disciplinas{% endblock %}
+
+{% block teacher_content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-journal-text text-primary"></i> Minhas Disciplinas
+    </h2>
+    
+    {% if courses %}
+        <div class="row">
+            {% for course in courses %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ course.code }} - {{ course.name }}</h5>
+                            <p class="card-text">
+                                <span class="badge bg-primary">{{ course.area }}</span>
+                            </p>
+                            <p class="card-text text-muted">
+                                <i class="bi bi-people"></i> {{ course.enrolled_students_count }} alunos matriculados
+                            </p>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'teachers:course_materials' course.id %}" class="btn btn-primary">
+                                    <i class="bi bi-file-earmark"></i> Materiais
+                                </a>
+                                <a href="{% url 'teachers:course_videos' course.id %}" class="btn btn-primary">
+                                    <i class="bi bi-play-circle"></i> Vídeos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Você não possui disciplinas cadastradas.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

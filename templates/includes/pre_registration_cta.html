@@ -1,0 +1,4 @@
+{% url 'students:pre_registration' as pre_url %}
+<a href="{{ pre_url|default:'/aluno/pre-cadastro/' }}" class="btn btn-dark btn-lg">
+  <i class="bi bi-pencil-square"></i> Inscrever-se Agora
+</a>

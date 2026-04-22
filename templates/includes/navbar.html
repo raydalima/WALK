@@ -1,0 +1,56 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'accounts:home' %}"> 
+      <span class="logo-icon"><i class="bi bi-mortarboard-fill"></i></span>
+      WALK
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="#mainNav" aria-expanded="false" aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        {% if '/blog/' in request.path or '/aluno/' in request.path or '/professor/' in request.path or '/painel/' in request.path %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:home' %}">VOLTA PARA O INÍCIO</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="/blog/">BLOG</a>
+        </li>
+
+        <!-- Entrar (sempre visível) -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="entrarMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">ENTRAR</a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="entrarMenu">
+            <li><a class="dropdown-item" href="/login/aluno/">Aluno</a></li>
+            <li><a class="dropdown-item" href="/login/professor/">Professor</a></li>
+            <li><a class="dropdown-item" href="/login/gestao/">Administrativo</a></li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<style>
+/* Estilo do botão de logout (btn-gradient) usado nos painéis */
+.btn-gradient{
+  background: linear-gradient(90deg,#2b7cff,#1752c3);
+  color: #fff !important;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight:600;
+}
+.btn-gradient:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(20,40,80,0.12);
+}
+</style>

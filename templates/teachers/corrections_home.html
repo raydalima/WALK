@@ -1,0 +1,66 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Correções{% endblock %}
+
+{% block teacher_content %}
+<div class="t-grid">
+  <div class="t-card">
+    <div class="t-card__header">
+      <h2 class="t-card__title">Redações pendentes</h2>
+      <span class="t-badge">{{ pending_essays|length }}</span>
+    </div>
+    <div class="t-card__body">
+      {% if pending_essays %}
+        <ul class="t-list">
+          {% for essay in pending_essays %}
+            <li class="t-list__item">
+              <div class="t-list__main">
+                <div class="t-list__title">{{ essay.title }}</div>
+                <div class="t-list__subtitle">
+                  {{ essay.student.user.get_full_name|default:essay.student.user.username }}
+                  • {{ essay.course.nome }}
+                  • {{ essay.get_status_display }}
+                </div>
+              </div>
+              <div class="t-list__actions">
+                <a class="t-btn t-btn--primary" href="{% url 'teachers:essay_correction_detail' essay.id %}">Corrigir</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="t-empty">Nenhuma redação pendente no momento.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="t-card">
+    <div class="t-card__header">
+      <h2 class="t-card__title">Redações corrigidas</h2>
+      <span class="t-badge">{{ corrected_essays|length }}</span>
+    </div>
+    <div class="t-card__body">
+      {% if corrected_essays %}
+        <ul class="t-list">
+          {% for essay in corrected_essays %}
+            <li class="t-list__item">
+              <div class="t-list__main">
+                <div class="t-list__title">{{ essay.title }}</div>
+                <div class="t-list__subtitle">
+                  {{ essay.student.user.get_full_name|default:essay.student.user.username }}
+                  • Nota {{ essay.score|default:"-" }}
+                </div>
+              </div>
+              <div class="t-list__actions">
+                <a class="t-btn t-btn--ghost" href="{% url 'teachers:essay_correction_detail' essay.id %}">Revisar</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="t-empty">Nenhuma redação corrigida ainda.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

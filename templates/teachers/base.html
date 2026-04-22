@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Painel dos Professores - WALK{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'teachers/teachers.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="t-layout">
+  <aside class="t-sidebar">
+    <div class="t-brand">
+      <div class="t-brand__title">WALK</div>
+      <div class="t-brand__subtitle">Painel do Professor</div>
+    </div>
+
+    <nav class="t-nav">
+      <a class="t-nav__item" href="{% url 'teachers:root' %}">Painel</a>
+      <a class="t-nav__item" href="{% url 'teachers:my_courses' %}">Minhas Disciplinas</a>
+      <a class="t-nav__item" href="{% url 'teachers:materials_list' %}">Conteúdos</a>
+      <a class="t-nav__item" href="{% url 'teachers:attendance_home' %}">Frequência</a>
+      <a class="t-nav__item" href="{% url 'teachers:corrections_home' %}">Correções</a>
+      <a class="t-nav__item" href="{% url 'teachers:assessments_teacher:quiz_list' %}">Questionários</a>
+      <a class="t-nav__item" href="/logout/">Sair</a>
+    </nav>
+  </aside>
+
+  <main class="t-main">
+    <header class="t-topbar">
+      <div class="t-topbar__left">
+        <div class="d-flex gap-2 flex-wrap mb-2">
+          <a
+            href="{% url 'teachers:dashboard' %}"
+            class="btn btn-outline-secondary btn-sm"
+            onclick="return goBackOrFallback(event, '{% url 'teachers:dashboard' %}');"
+          >
+            <i class="bi bi-arrow-return-left me-2"></i>Voltar
+          </a>
+          <a
+            href="{% url 'teachers:dashboard' %}"
+            class="btn btn-outline-secondary btn-sm"
+          >
+            <i class="bi bi-house-door me-2"></i>Painel do professor
+          </a>
+        </div>
+        <h1 class="t-topbar__title">{% block page_title %}Painel{% endblock %}</h1>
+      </div>
+      <div class="t-topbar__right">
+        <div class="t-user">
+          <div class="t-user__name">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <div class="t-user__role">Professor</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="t-content">
+      {% if messages %}
+        <div class="t-flash">
+          {% for message in messages %}
+            <div class="t-flash__item t-flash__item--{{ message.tags|default:'info' }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block teacher_content %}{% endblock %}
+    </section>
+  </main>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer class="t-footer">
+  <p>Desenvolvido por Equipe WALK</p>
+</footer>
+{% endblock %}

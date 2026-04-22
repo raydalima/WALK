@@ -1,0 +1,30 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Feedback{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">
+      Feedback para {{ student.user.get_full_name|default:student.user.username|default:student }}
+    </h2>
+    <a class="t-btn t-btn--ghost" href="{% url 'teachers:student_diagnostic' student.id %}">Voltar</a>
+  </div>
+  <div class="t-card__body">
+    <form method="post">
+      {% csrf_token %}
+      <div style="display:grid; gap:10px;">
+        <label style="font-weight:800;">Mensagem</label>
+        <textarea name="feedback" rows="6" style="width:100%; padding:12px; border-radius:12px; border:1px solid #e6e9f0;"></textarea>
+        <div>
+          <button class="t-btn t-btn--primary" type="submit">Enviar</button>
+        </div>
+      </div>
+    </form>
+    <div class="t-empty" style="margin-top:14px;">
+      Observação: este feedback ainda não fica salvo no sistema. Se você quiser salvar histórico,
+      eu adiciono um model de Feedback e mostro a lista por aluno.
+    </div>
+  </div>
+</div>
+{% endblock %}

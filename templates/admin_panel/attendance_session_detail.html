@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load form_extras %}
+{% block title %}Registro de Frequência{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Frequência - {{ session.course.nome|default:session.area|default:"Aula" }} - {{ session.date|date:"d/m/Y" }}</h2>
+  <p class="text-muted">Turma: {{ session.turma|default:"-" }} | Área: {{ session.area|default:session.course.area|default:"-" }}</p>
+  <div class="card"><div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <table class="table table-hover">
+        <thead><tr><th>Aluno</th><th>Situação</th></tr></thead>
+        <tbody>
+          {% for student in students %}
+            {% with record=existing_records|get_item:student.id %}
+            <tr>
+              <td>{{ student.user.get_full_name|default:student.user.username }}</td>
+              <td>
+                <select name="student_{{ student.id }}" class="form-control">
+                  {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if record and record.status == value %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endwith %}
+          {% empty %}
+            <tr><td colspan="2" class="text-muted text-center">Nenhum aluno encontrado para esta sessão.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button class="btn btn-success" type="submit">Salvar Frequência</button>
+      <a href="{% url 'admin_panel:attendance_sessions_list' %}" class="btn btn-secondary">Voltar</a>
+    </form>
+  </div></div>
+</div>
+{% endblock %}

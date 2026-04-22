@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block content %}
+<section id="pre-cadastro-aluno">
+  <div class="container py-4">
+    <h2 class="mb-4 fw-bold fs-2 text-primary">Pré-cadastro de Aluno</h2>
+    <form method="post" action="" class="needs-validation" novalidate>
+      {% csrf_token %}
+
+      {% if form %}
+        {% with f=form %}
+      {% elif pre_registration_form %}
+        {% with f=pre_registration_form %}
+      {% endif %}
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">1. Dados do estudante</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="{{ f.name.id_for_label }}" class="form-label">{{ f.name.label }}</label>
+            {{ f.name }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.social_name.id_for_label }}" class="form-label">{{ f.social_name.label }}</label>
+            {{ f.social_name }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.gender.id_for_label }}" class="form-label">{{ f.gender.label }}</label>
+            {{ f.gender }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.race_self_declaration.id_for_label }}" class="form-label">{{ f.race_self_declaration.label }}</label>
+            {{ f.race_self_declaration }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.pronouns.id_for_label }}" class="form-label">{{ f.pronouns.label }}</label>
+            {{ f.pronouns }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.birth_date.id_for_label }}" class="form-label">{{ f.birth_date.label }}</label>
+            {{ f.birth_date }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.cpf.id_for_label }}" class="form-label">{{ f.cpf.label }}</label>
+            {{ f.cpf }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.rg.id_for_label }}" class="form-label">{{ f.rg.label }}</label>
+            {{ f.rg }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.phone.id_for_label }}" class="form-label">{{ f.phone.label }}</label>
+            {{ f.phone }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.email.id_for_label }}" class="form-label">{{ f.email.label }}</label>
+            {{ f.email }}
+          </div>
+          <div class="col-md-8">
+            <label for="{{ f.address.id_for_label }}" class="form-label">{{ f.address.label }}</label>
+            {{ f.address }}
+          </div>
+          <div class="col-md-2">
+            <label for="{{ f.city.id_for_label }}" class="form-label">{{ f.city.label }}</label>
+            {{ f.city }}
+          </div>
+          <div class="col-md-1">
+            <label for="{{ f.state.id_for_label }}" class="form-label">{{ f.state.label }}</label>
+            {{ f.state }}
+          </div>
+          <div class="col-md-1">
+            <label for="{{ f.zip_code.id_for_label }}" class="form-label">{{ f.zip_code.label }}</label>
+            {{ f.zip_code }}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">2. Dados do responsável (se menor de idade)</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="{{ f.responsible_name.id_for_label }}" class="form-label">{{ f.responsible_name.label }}</label>
+            {{ f.responsible_name }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.responsible_phone.id_for_label }}" class="form-label">{{ f.responsible_phone.label }}</label>
+            {{ f.responsible_phone }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.responsible_cpf.id_for_label }}" class="form-label">{{ f.responsible_cpf.label }}</label>
+            {{ f.responsible_cpf }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.responsible_rg.id_for_label }}" class="form-label">{{ f.responsible_rg.label }}</label>
+            {{ f.responsible_rg }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.responsible_address.id_for_label }}" class="form-label">{{ f.responsible_address.label }}</label>
+            {{ f.responsible_address }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.responsible_relationship.id_for_label }}" class="form-label">{{ f.responsible_relationship.label }}</label>
+            {{ f.responsible_relationship }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.responsible_relationship_other.id_for_label }}" class="form-label">{{ f.responsible_relationship_other.label }}</label>
+            {{ f.responsible_relationship_other }}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">3. Perfil Escolar</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="{{ f.school_situation.id_for_label }}" class="form-label">{{ f.school_situation.label }}</label>
+            {{ f.school_situation }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.school_type.id_for_label }}" class="form-label">{{ f.school_type.label }}</label>
+            {{ f.school_type }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.graduation_year.id_for_label }}" class="form-label">{{ f.graduation_year.label }}</label>
+            {{ f.graduation_year }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.has_taken_enem.id_for_label }}" class="form-label">{{ f.has_taken_enem.label }}</label>
+            {{ f.has_taken_enem }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.intended_course.id_for_label }}" class="form-label">{{ f.intended_course.label }}</label>
+            {{ f.intended_course }}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">4. Perfil Socioeconômico</legend>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="{{ f.family_income_range.id_for_label }}" class="form-label">{{ f.family_income_range.label }}</label>
+            {{ f.family_income_range }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.household_members.id_for_label }}" class="form-label">{{ f.household_members.label }}</label>
+            {{ f.household_members }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.has_internet_at_home.id_for_label }}" class="form-label">{{ f.has_internet_at_home.label }}</label>
+            {{ f.has_internet_at_home }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.has_device.id_for_label }}" class="form-label">{{ f.has_device.label }}</label>
+            {{ f.has_device }}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ f.works_currently.id_for_label }}" class="form-label">{{ f.works_currently.label }}</label>
+            {{ f.works_currently }}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mb-4 p-3 border rounded bg-light">
+        <legend class="h5 mb-3 fw-bold text-secondary">5. Divulgação e Motivação</legend>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="{{ f.how_did_you_hear.id_for_label }}" class="form-label">{{ f.how_did_you_hear.label }}</label>
+            {{ f.how_did_you_hear }}
+          </div>
+          <div class="col-md-6">
+            <label for="{{ f.why_join.id_for_label }}" class="form-label">{{ f.why_join.label }}</label>
+            {{ f.why_join }}
+          </div>
+          <div class="col-md-12">
+            <label for="{{ f.message.id_for_label }}" class="form-label">{{ f.message.label }}</label>
+            {{ f.message }}
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="form-check mb-3">
+        {{ f.consent }}
+        {{ f.consent.label_tag }}
+      </div>
+
+      <button type="submit" class="btn btn-primary fs-5 px-4 py-2">Enviar</button>
+
+      {% endwith %}
+    </form>
+  </div>
+</section>
+{% endblock %}

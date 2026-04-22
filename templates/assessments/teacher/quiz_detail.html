@@ -1,0 +1,40 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Questionário{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">{{ quiz.title }}</h2>
+    <div class="t-list__actions">
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:question_create' quiz.id %}">Adicionar pergunta</a>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:submission_list' quiz.id %}">Ver envios</a>
+      {% if not quiz.is_published %}
+        <a class="t-btn t-btn--primary" href="{% url 'teachers:assessments_teacher:quiz_publish' quiz.id %}">Publicar</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="t-card__body">
+    <div class="t-empty">{{ quiz.description|default:"" }}</div>
+
+    <h3 style="margin-top:16px; margin-bottom:10px;">Perguntas</h3>
+    {% if questions %}
+      <ul class="t-list">
+        {% for q in questions %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">#{{ q.order }} — {{ q.get_type_display }}</div>
+              <div class="t-list__subtitle">{{ q.text }}</div>
+            </div>
+            <div class="t-list__actions">
+              <span class="t-badge">{{ q.points }} pts</span>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhuma pergunta ainda.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

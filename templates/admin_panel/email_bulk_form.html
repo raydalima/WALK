@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Envio em Massa{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 920px;">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-0"><i class="bi bi-send text-primary"></i> Envio em massa</h2>
+      <p class="text-muted mb-0">Comunicados para alunos, responsáveis, professores ou grupos filtrados.</p>
+    </div>
+    <a href="{% url 'admin_panel:email_communications_list' %}" class="btn btn-outline-secondary">Histórico</a>
+  </div>
+
+  <div class="alert alert-warning">
+    O sistema envia individualmente para cada destinatário. Assim, os e-mails não ficam visíveis uns para os outros.
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Enviar comunicado</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

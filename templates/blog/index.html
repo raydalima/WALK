@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog - WALK{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h1 class="mb-4">Blog</h1>
+  {% if posts %}
+    <div class="row g-4">
+      {% for post in posts %}
+        <div class="col-md-6">
+          <div class="card p-3">
+            <h5><a href="{% url 'blog:post_detail' post.slug %}">{{ post.title }}</a></h5>
+            <p class="text-muted small">{{ post.excerpt }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Nenhuma publicação encontrada.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Garantir que o botão global exista e funcione caso o base.html não o exiba
+  (function(){
+    var btn = document.getElementById('backToTop');
+    if(!btn){
+      btn = document.createElement('button');
+      btn.id = 'backToTop';
+      btn.title = 'Voltar ao topo';
+      btn.innerHTML = '<i class="bi bi-arrow-up"></i>';
+      document.body.appendChild(btn);
+      // estilo mínimo caso base não tenha
+      btn.style.position = 'fixed'; btn.style.right = '28px'; btn.style.bottom = '28px';
+      btn.style.width = '50px'; btn.style.height = '50px'; btn.style.borderRadius = '50%';
+      btn.style.background = 'linear-gradient(90deg,#f39c12,#e67e22)'; btn.style.color = '#fff';
+      btn.style.border = 'none'; btn.style.display = 'flex'; btn.style.alignItems = 'center'; btn.style.justifyContent = 'center';
+      btn.style.zIndex = 1100; btn.style.boxShadow = '0 8px 24px rgba(20,40,80,0.12)';
+    }
+    var onScroll = function(){
+      if(window.pageYOffset>300){ btn.style.display='flex'; } else { btn.style.display='none'; }
+    };
+    window.addEventListener('scroll', onScroll);
+    btn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+    onScroll();
+  })();
+</script>
+{% endblock %}

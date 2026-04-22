@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding: 24px;">
+  <h1>{{ quiz.title }}</h1>
+  <p>{{ quiz.description }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% for q in questions %}
+      <div style="border:1px solid #e6e9f0; border-radius: 12px; padding: 14px; margin: 12px 0; background:#fff;">
+        <div style="font-weight:800; margin-bottom: 8px;">{{ forloop.counter }}. {{ q.text }}</div>
+
+        {% if q.type == 'MCQ' or q.type == 'TF' %}
+          {% for c in q.choices.all %}
+            <label style="display:block; margin: 6px 0;">
+              <input type="radio" name="q_{{ q.id }}" value="{{ c.id }}"> {{ c.text }}
+            </label>
+          {% endfor %}
+        {% else %}
+          <textarea name="q_{{ q.id }}" rows="5" style="width: 100%; padding: 10px; border-radius: 10px; border:1px solid #e6e9f0;"></textarea>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit">Enviar</button>
+  </form>
+</div>
+{% endblock %}

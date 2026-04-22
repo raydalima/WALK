@@ -1,0 +1,207 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Nova aula{% endblock %}
+
+{% block teacher_content %}
+<style>
+  .attendance-create {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+    gap: 18px;
+  }
+  .attendance-create__card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 14px 34px rgba(17, 45, 78, 0.08);
+    overflow: hidden;
+  }
+  .attendance-create__header {
+    padding: 20px 24px 10px;
+    border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+  }
+  .attendance-create__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .attendance-create__subtitle {
+    color: #5c6b80;
+    margin: 6px 0 0;
+  }
+  .attendance-create__body {
+    padding: 24px;
+  }
+  .attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .attendance-field--full {
+    grid-column: 1 / -1;
+  }
+  .attendance-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .attendance-field .errorlist {
+    color: #c62828;
+    margin: 8px 0 0;
+    padding-left: 18px;
+    font-size: 0.92rem;
+  }
+  .attendance-help {
+    color: #6b7280;
+    font-size: 0.92rem;
+    margin-top: 6px;
+  }
+  .attendance-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .attendance-pill-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .attendance-pill {
+    background: #eef4ff;
+    color: #1746a2;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .attendance-aside__list {
+    display: grid;
+    gap: 12px;
+  }
+  .attendance-aside__item {
+    background: #f7f9fc;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .attendance-aside__label {
+    color: #607086;
+    font-size: 0.86rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .attendance-aside__value {
+    font-weight: 700;
+    color: #15304f;
+  }
+  @media (max-width: 900px) {
+    .attendance-create {
+      grid-template-columns: 1fr;
+    }
+    .attendance-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="attendance-create">
+  <section class="attendance-create__card">
+    <div class="attendance-create__header">
+      <h2 class="attendance-create__title">Preparar chamada da aula</h2>
+      <p class="attendance-create__subtitle">
+        Organize a sessão de frequência de <strong>{{ course.nome|default:course }}</strong> antes de marcar a presença dos alunos.
+      </p>
+    </div>
+
+    <div class="attendance-create__body">
+      {% if form.non_field_errors %}
+        <div class="t-flash">
+          {% for error in form.non_field_errors %}
+            <div class="t-flash__item t-flash__item--error">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="attendance-grid">
+          <div class="attendance-field">
+            <label for="{{ form.date.id_for_label }}">{{ form.date.label }}</label>
+            {{ form.date }}
+            {% if form.date.help_text %}<div class="attendance-help">{{ form.date.help_text }}</div>{% endif %}
+            {{ form.date.errors }}
+          </div>
+
+          <div class="attendance-field">
+            <label for="{{ form.turma.id_for_label }}">{{ form.turma.label }}</label>
+            {{ form.turma }}
+            <div class="attendance-help">Escolha a turma quando a aula estiver vinculada a uma turma específica.</div>
+            {{ form.turma.errors }}
+          </div>
+
+          <div class="attendance-field attendance-field--full">
+            <label for="{{ form.content_taught.id_for_label }}">{{ form.content_taught.label }}</label>
+            {{ form.content_taught }}
+            <div class="attendance-help">Esse conteúdo ajuda a equipe a consultar o histórico pedagógico da aula.</div>
+            {{ form.content_taught.errors }}
+          </div>
+
+          <div class="attendance-field attendance-field--full">
+            <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+            {{ form.notes }}
+            <div class="attendance-help">Campo opcional para ocorrências, recados ou observações do encontro.</div>
+            {{ form.notes.errors }}
+          </div>
+        </div>
+
+        <div class="attendance-actions">
+          <button class="t-btn t-btn--primary" type="submit">
+            <i class="bi bi-check2-square"></i> Criar sessão e marcar frequência
+          </button>
+          <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_course' course.id %}">
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <aside class="attendance-create__card">
+    <div class="attendance-create__header">
+      <h2 class="attendance-create__title">Resumo da disciplina</h2>
+      <p class="attendance-create__subtitle">Informações úteis antes de abrir a chamada.</p>
+    </div>
+
+    <div class="attendance-create__body">
+      <div class="attendance-aside__list">
+        <div class="attendance-aside__item">
+          <div class="attendance-aside__label">Disciplina</div>
+          <div class="attendance-aside__value">{{ course.nome|default:course }}</div>
+        </div>
+        <div class="attendance-aside__item">
+          <div class="attendance-aside__label">Área</div>
+          <div class="attendance-aside__value">{{ course.area }}</div>
+        </div>
+        <div class="attendance-aside__item">
+          <div class="attendance-aside__label">Alunos matriculados</div>
+          <div class="attendance-aside__value">{{ student_count }}</div>
+        </div>
+      </div>
+
+      {% if turmas %}
+        <div class="attendance-pill-list">
+          {% for turma in turmas %}
+            <span class="attendance-pill">{{ turma.nome }} • {{ turma.get_turno_display }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="attendance-help" style="margin-top: 16px;">
+          Nenhuma turma específica vinculada. A chamada será aberta para os alunos matriculados na disciplina.
+        </p>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

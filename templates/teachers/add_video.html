@@ -1,0 +1,71 @@
+{% extends 'teachers/base.html' %}
+{% block title %}Adicionar Aula - WALK{% endblock %}
+{% block page_title %}Adicionar Aula{% endblock %}
+
+{% block teacher_content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'teachers:dashboard' %}">Painel</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'teachers:course_videos' course.id %}">Aulas</a></li>
+            <li class="breadcrumb-item active">Adicionar Aula</li>
+        </ol>
+    </nav>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Adicionar Aula em Vídeo - {{ course.nome }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Título da Aula</label>
+                            {{ form.title }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Descrição</label>
+                            {{ form.description }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.platform.id_for_label }}" class="form-label">Plataforma</label>
+                                {{ form.platform }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.lesson_number.id_for_label }}" class="form-label">Número da Aula</label>
+                                {{ form.lesson_number }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.video_url.id_for_label }}" class="form-label">Link do Vídeo</label>
+                            {{ form.video_url }}
+                            <div class="form-text">Cole o link completo do YouTube ou Vimeo</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.duration.id_for_label }}" class="form-label">Duração</label>
+                            {{ form.duration }}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-plus-circle"></i> Adicionar Aula
+                            </button>
+                            <a href="{% url 'teachers:course_videos' course.id %}" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

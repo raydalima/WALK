@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Aulas em Vídeo - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-play-circle text-primary"></i> Aulas em Vídeo
+    </h2>
+    
+    {% if video_lessons %}
+        <div class="row">
+            {% for video in video_lessons %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Aula {{ video.lesson_number }}: {{ video.title }}</h5>
+                            <p class="card-text">
+                                <span class="badge bg-primary">{{ video.course.nome }}</span>
+                                <span class="badge bg-info text-dark">{{ video.get_platform_display }}</span>
+                                {% if video.duration %}
+                                    <span class="badge bg-secondary">{{ video.duration }}</span>
+                                {% endif %}
+                            </p>
+                            {% if video.description %}
+                                <p class="card-text text-muted">{{ video.description|truncatewords:20 }}</p>
+                            {% endif %}
+                            <a href="{{ video.video_url }}" target="_blank" class="btn btn-primary">
+                                <i class="bi bi-play-circle-fill"></i> Assistir Aula
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Nenhuma aula disponível no momento.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.nome }} - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'students:dashboard' %}">Painel</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'students:my_courses' %}">Minhas Disciplinas</a></li>
+            <li class="breadcrumb-item active">{{ course.nome }}</li>
+        </ol>
+    </nav>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">{{ course.nome }}</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Área:</strong> {{ course.area }}</p>
+            {% if course.descricao %}
+                <p><strong>Descrição:</strong> {{ course.descricao }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mb-3 d-flex flex-wrap gap-2">
+        <a href="{% url 'students:view_materials' course.id %}" class="btn btn-primary">
+            <i class="bi bi-file-earmark-text"></i> Ver Materiais
+        </a>
+        <a href="{% url 'students:video_lessons_list' %}" class="btn btn-outline-primary">
+            <i class="bi bi-play-circle"></i> Ver Aulas em Vídeo
+        </a>
+        <a href="{% url 'students:quiz_list' %}?course={{ course.id }}" class="btn btn-outline-primary">
+            <i class="bi bi-clipboard-check"></i> Ver Simulados
+        </a>
+        <a href="{% url 'students:activity_list' %}?course={{ course.id }}" class="btn btn-outline-primary">
+            <i class="bi bi-journal-check"></i> Ver Atividades
+        </a>
+        <a href="{% url 'students:export_enrollment_doc' course.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-file-earmark-word"></i> Exportar DOC
+        </a>
+        <a href="{% url 'students:export_enrollment_pdf' course.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-pdf"></i> Materiais</h5>
+                </div>
+                <div class="card-body">
+                    {% if materials %}
+                        <div class="list-group">
+                            {% for material in materials %}
+                                {% if material.has_resource %}
+                                    <a href="{{ material.access_url }}" target="_blank" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="mb-1">{{ material.title }}</h6>
+                                            <small class="text-muted">{{ material.get_material_type_display }} • link externo</small>
+                                        </div>
+                                            <span class="badge bg-secondary">Abrir</span>
+                                        </div>
+                                    </a>
+                                {% else %}
+                                    <div class="list-group-item">
+                                        <h6 class="mb-1">{{ material.title }}</h6>
+                                        <small class="text-muted">Material sem link disponível.</small>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Nenhum material disponível</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-play-circle"></i> Aulas em Vídeo</h5>
+                </div>
+                <div class="card-body">
+                    {% if video_lessons %}
+                        <div class="list-group">
+                            {% for video in video_lessons %}
+                                <a href="{{ video.video_url }}" target="_blank" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">Aula {{ video.lesson_number }}: {{ video.title }}</h6>
+                                            <small class="text-muted">{{ video.get_platform_display }}</small>
+                                        </div>
+                                        {% if video.duration %}
+                                            <span class="badge bg-info text-dark">{{ video.duration }}</span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Nenhuma aula disponível</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Simulados e Questionários</h5>
+                </div>
+                <div class="card-body">
+                    {% if quizzes %}
+                        <div class="list-group">
+                            {% for quiz in quizzes %}
+                                <a href="{% url 'assessments:student_take_quiz' quiz.id %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ quiz.title }}</h6>
+                                            <small class="text-muted">{{ quiz.description|default:"Simulado disponível para esta disciplina."|truncatewords:18 }}</small>
+                                        </div>
+                                        <span class="badge bg-primary">Responder</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Nenhum simulado publicado para esta disciplina.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

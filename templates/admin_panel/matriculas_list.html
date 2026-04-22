@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Matrículas - Painel{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2>Matrículas</h2>
+  <ul class="list-group">
+    {% for m in matriculas %}
+      <li class="list-group-item">{{ m }}</li>
+    {% empty %}
+      <li class="list-group-item">Nenhuma matrícula.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

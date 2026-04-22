@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Ficha do Professor</h1>
+<ul>
+  <li><b>Nome:</b> {{ professor.user.get_full_name|default:professor.user.username }}</li>
+  <li><b>E-mail:</b> {{ professor.user.email }}</li>
+  <li><b>CPF:</b> {{ professor.cpf }}</li>
+  <li><b>RG:</b> {{ professor.rg }}</li>
+  <li><b>Data de nascimento:</b> {{ professor.birth_date }}</li>
+  <li><b>Telefone:</b> {{ professor.phone }}</li>
+  <li><b>Endereço:</b> {{ professor.address }}</li>
+  <li><b>Cidade:</b> {{ professor.city }}</li>
+  <li><b>Estado:</b> {{ professor.state }}</li>
+  <li><b>CEP:</b> {{ professor.zip_code }}</li>
+  <li><b>Formação:</b> {{ professor.formation }}</li>
+  <li><b>Área de atuação:</b> {{ professor.area }}</li>
+  <!-- Adicione outros campos relevantes do model Teacher -->
+</ul>
+<a href="javascript:history.back()" class="btn btn-secondary">Voltar</a>
+{% endblock %}

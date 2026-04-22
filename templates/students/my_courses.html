@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Minhas Disciplinas - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-journal-text text-primary"></i> Minhas Disciplinas
+    </h2>
+    
+    {% if enrollments %}
+        <div class="row">
+            {% for enrollment in enrollments %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ enrollment.course.nome }}
+                            </h5>
+                            <p class="card-text text-muted">
+                                <i class="bi bi-bookmark"></i> {{ enrollment.course.area }}
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{% url 'students:course_detail' enrollment.course.id %}" class="btn btn-primary">
+                                    <i class="bi bi-eye"></i> Ver Detalhes
+                                </a>
+                                <a href="{% url 'students:view_materials' enrollment.course.id %}" class="btn btn-outline-primary">
+                                    <i class="bi bi-file-earmark-text"></i> Materiais
+                                </a>
+                                <a href="{% url 'students:video_lessons_list' %}" class="btn btn-outline-primary">
+                                    <i class="bi bi-play-circle"></i> Vídeos
+                                </a>
+                                <a href="{% url 'students:quiz_list' %}?course={{ enrollment.course.id }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-clipboard-check"></i> Simulados
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Você não está matriculado em nenhuma disciplina no momento.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

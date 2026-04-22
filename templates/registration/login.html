@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card p-4">
+        <h3 class="mb-3">Entrar</h3>
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <div class="d-flex align-items-center">
+            <button type="submit" class="btn btn-primary">Entrar</button>
+            <a href="/" class="btn btn-secondary ms-2">Voltar ao início</a>
+          </div>
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

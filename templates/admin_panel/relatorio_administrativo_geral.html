@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Administrativo (Geral)</h1>
+<a href="{% url 'admin_panel:relatorio_administrativo_geral_csv' %}" class="btn btn-secondary">Exportar CSV</a>
+<ul>
+  {% for adm in administrativos %}
+    <li>{{ adm.user.get_full_name|default:adm.user.username }} ({{ adm.user.email }})</li>
+  {% empty %}
+    <li>Nenhum membro administrativo cadastrado.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

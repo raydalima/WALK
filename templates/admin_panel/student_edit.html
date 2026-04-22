@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Editar Aluno - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="bi bi-pencil text-primary"></i> Editar Perfil de {{ student.user.get_full_name }}</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+                <h5 class="mb-3">Dados de acesso e contato</h5>
+                {{ user_form.as_p }}
+
+                <h5 class="mb-3 mt-4">Dados da ficha do aluno</h5>
+                {{ form.as_p }}
+
+                <h5 class="mb-3 mt-4">Aprovação no vestibular</h5>
+                <p class="text-muted">Preencha apenas quando houver aprovação confirmada.</p>
+                {{ approval_form.as_p }}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Atualizar</button>
+                    <a href="{% if request.GET.next == 'relatorio' %}{% url 'admin_panel:relatorio_alunos_geral' %}{% else %}{% url 'admin_panel:students_list' %}{% endif %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

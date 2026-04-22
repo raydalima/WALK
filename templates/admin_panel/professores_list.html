@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Professores - Painel{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2>Professores</h2>
+  <ul class="list-group">
+    {% for p in professores %}
+      <li class="list-group-item">{{ p.get_full_name|default:p }}</li>
+    {% empty %}
+      <li class="list-group-item">Nenhum professor.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

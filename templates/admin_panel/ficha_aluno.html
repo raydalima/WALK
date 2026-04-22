@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-1">Ficha do Aluno</h1>
+      <p class="text-muted mb-0">{{ aluno.user.get_full_name|default:aluno.user.username }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'admin_panel:student_edit' aluno.id %}" class="btn btn-primary">Editar ficha</a>
+      <a href="{% url 'admin_panel:relatorio_alunos_geral' %}" class="btn btn-outline-secondary">Voltar para a relação</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Dados pessoais</h5>
+          <p><strong>Nome:</strong> {{ aluno.user.get_full_name|default:aluno.user.username }}</p>
+          <p><strong>E-mail:</strong> {{ aluno.user.email|default:"-" }}</p>
+          <p><strong>Telefone:</strong> {{ aluno.user.phone|default:"-" }}</p>
+          <p><strong>Data de nascimento:</strong> {{ aluno.birth_date|date:"d/m/Y"|default:"-" }}</p>
+          <p><strong>CPF:</strong> {{ aluno.cpf|default:"-" }}</p>
+          <p><strong>RG:</strong> {{ aluno.rg|default:"-" }}</p>
+          <p><strong>Matrícula:</strong> {{ aluno.enrollment_number|default:"-" }}</p>
+          <p><strong>Situação acadêmica:</strong> {{ aluno.get_status_display }}</p>
+          <p><strong>Situação do cadastro:</strong> {% if aluno.is_active %}Ativo{% else %}Inativo{% endif %}</p>
+          <p><strong>Curso aprovado:</strong> {{ aluno.approved_course|default:"-" }}</p>
+          <p><strong>Motivo de saída:</strong> {{ aluno.exit_reason|default:"-" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Contato e endereço</h5>
+          <p><strong>Endereço:</strong> {{ aluno.address|default:"-" }}</p>
+          <p><strong>Cidade:</strong> {{ aluno.city|default:"-" }}</p>
+          <p><strong>Estado:</strong> {{ aluno.state|default:"-" }}</p>
+          <p><strong>CEP:</strong> {{ aluno.zip_code|default:"-" }}</p>
+          <p><strong>Contato de emergência:</strong> {{ aluno.emergency_contact_name|default:"-" }}</p>
+          <p><strong>Telefone de emergência:</strong> {{ aluno.emergency_contact_phone|default:"-" }}</p>
+          <p><strong>Observações:</strong> {{ aluno.notes|default:"-" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Disciplinas matriculadas</h5>
+          {% if enrollments %}
+            <ul class="mb-0">
+              {% for enrollment in enrollments %}
+                <li>{{ enrollment.course.nome }}{% if enrollment.course.area %} - {{ enrollment.course.area }}{% endif %}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">O aluno não possui disciplinas ativas no momento.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Histórico básico</h5>
+          {% if history_entries %}
+            <div class="list-group list-group-flush">
+              {% for entry in history_entries %}
+                <div class="list-group-item px-0">
+                  <div class="d-flex justify-content-between flex-wrap gap-2">
+                    <strong>{{ entry.title }}</strong>
+                    <small class="text-muted">{{ entry.created_at|date:"d/m/Y H:i" }}</small>
+                  </div>
+                  {% if entry.description %}
+                    <p class="mb-1">{{ entry.description }}</p>
+                  {% endif %}
+                  <small class="text-muted">
+                    Registrado por {{ entry.created_by.get_full_name|default:entry.created_by.username|default:"Sistema" }}
+                  </small>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted mb-0">Nenhum registro histórico disponível.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Aprovações registradas</h5>
+          {% if approvals %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Vestibular</th>
+                    <th>Instituição</th>
+                    <th>Curso</th>
+                    <th>Ano</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for approval in approvals %}
+                    <tr>
+                      <td>{{ approval.vestibular }}</td>
+                      <td>{{ approval.institution }}</td>
+                      <td>{{ approval.course_name }}</td>
+                      <td>{{ approval.approval_year }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="text-muted mb-0">Nenhuma aprovação registrada.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

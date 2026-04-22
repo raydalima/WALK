@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Novo Administrativo{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Novo Perfil Administrativo</h2>
+  <div class="card"><div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <h5>Usuário</h5>
+      {{ user_form.as_p }}
+      <h5 class="mt-4">Perfil Administrativo</h5>
+      {{ profile_form.as_p }}
+      <button class="btn btn-success" type="submit">Salvar</button>
+      <a href="{% url 'admin_panel:administrative_list' %}" class="btn btn-secondary">Voltar</a>
+    </form>
+  </div></div>
+</div>
+{% endblock %}

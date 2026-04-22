@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel administrativo - WALK</title>
+    <!-- Adicione aqui outros elementos <meta> necessários, como descrição, palavras-chave, etc. -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'admin_panel/css/styles.css' %}">
+    <!-- Adicione aqui outros links para arquivos CSS, se necessário -->
+</head>
+<body>
+    <header>
+        <h1>Painel administrativo - WALK</h1>
+        <!-- Adicione aqui outros elementos de cabeçalho, como logotipo, barra de navegação, etc. -->
+    </header>
+
+    <nav>
+      <!-- ...outros links... -->
+      <a href="{% url 'admin_panel:relatorio_index' %}">Relatórios de Disciplinas</a>
+      <a href="{% url 'admin_panel:relatorio_alunos_geral' %}">Relatório Geral de Alunos</a>
+      <!-- ...outros links... -->
+    </nav>
+
+    <main>
+        {% block content %}
+        <!-- O conteúdo das páginas será inserido aqui -->
+        {% endblock %}
+    </main>
+
+    <footer>
+      <p>Desenvolvido por Equipe WALK</p>
+    </footer>
+</body>
+</html>

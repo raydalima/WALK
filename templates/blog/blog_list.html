@@ -1,0 +1,695 @@
+{% extends 'base.html' %}
+{% block title %}Blog - Notícias e Avisos - WALK{% endblock %}
+
+{% block content %}
+<style>
+  .blog-page {
+    --ink: #143351;
+    --muted: #617084;
+    --blue: #1d70d6;
+    --teal: #0e9478;
+    --paper: #fffdf7;
+    display: grid;
+    gap: 24px;
+    padding-bottom: 40px;
+  }
+  .blog-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 34px;
+    color: #fff;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(255, 221, 120, 0.42), transparent 28%),
+      linear-gradient(135deg, #11385f 0%, #166a88 52%, #0e9478 100%);
+    box-shadow: 0 24px 60px rgba(17, 56, 95, 0.2);
+  }
+  .blog-hero::before {
+    content: "";
+    position: absolute;
+    inset: auto -80px -140px auto;
+    width: 330px;
+    height: 330px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.13);
+  }
+  .blog-hero__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 22px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .blog-hero__eyebrow {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: .78rem;
+    font-weight: 900;
+  }
+  .blog-hero__title {
+    margin: 16px 0 10px;
+    max-width: 760px;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    font-weight: 950;
+  }
+  .blog-hero__subtitle {
+    margin: 0;
+    max-width: 680px;
+    color: rgba(255,255,255,.9);
+    font-size: 1.05rem;
+  }
+  .blog-hero__stat {
+    min-width: 160px;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.24);
+    backdrop-filter: blur(10px);
+    text-align: center;
+  }
+  .blog-hero__stat strong {
+    display: block;
+    font-size: 2.2rem;
+    line-height: 1;
+  }
+  .blog-filter {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+  }
+  .blog-filter__item {
+    white-space: nowrap;
+    border: 1px solid rgba(20, 51, 81, .12);
+    background: #fff;
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 850;
+    box-shadow: 0 8px 20px rgba(20, 51, 81, .06);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  .blog-filter__item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px rgba(20, 51, 81, .1);
+  }
+  .blog-filter__item.is-active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    border-color: transparent;
+  }
+  .blog-carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    background: #071f3a;
+    box-shadow: 0 22px 54px rgba(20, 51, 81, .16);
+  }
+  .blog-carousel__track {
+    display: flex;
+    transition: transform .45s ease;
+  }
+  .blog-carousel__slide {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    color: #fff;
+    background:
+      radial-gradient(circle at 86% 12%, rgba(255, 221, 120, .28), transparent 30%),
+      linear-gradient(135deg, #0b2b50 0%, #114c77 52%, #0e766a 100%);
+  }
+  .blog-carousel__media {
+    min-height: 330px;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02)),
+      repeating-linear-gradient(45deg, rgba(255,255,255,.1) 0 10px, transparent 10px 20px);
+  }
+  .blog-carousel__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .blog-carousel__content {
+    padding: 34px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .blog-carousel__label {
+    display: inline-flex;
+    width: max-content;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.22);
+    font-size: .78rem;
+    font-weight: 950;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .blog-carousel__title {
+    margin: 15px 0 10px;
+    font-size: clamp(1.7rem, 4vw, 2.75rem);
+    line-height: 1.04;
+    font-weight: 950;
+  }
+  .blog-carousel__excerpt {
+    color: rgba(255,255,255,.88);
+    font-size: 1.02rem;
+    margin: 0;
+  }
+  .blog-carousel__controls {
+    position: absolute;
+    inset: auto 18px 18px auto;
+    display: flex;
+    gap: 10px;
+    z-index: 4;
+  }
+  .blog-carousel__button {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.92);
+    color: #12395d;
+    font-weight: 950;
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  }
+  .blog-carousel__dots {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 4;
+  }
+  .blog-carousel__dot {
+    width: 10px;
+    height: 10px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255,255,255,.42);
+  }
+  .blog-carousel__dot.is-active {
+    width: 28px;
+    background: #fff;
+  }
+  .blog-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 22px;
+    align-items: start;
+  }
+  .featured-post {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    overflow: hidden;
+    border-radius: 24px;
+    background: var(--paper);
+    border: 1px solid rgba(20, 51, 81, .08);
+    box-shadow: 0 18px 45px rgba(20, 51, 81, .1);
+    margin-bottom: 22px;
+  }
+  .featured-post__image {
+    min-height: 320px;
+    background:
+      linear-gradient(135deg, rgba(29,112,214,.24), rgba(14,148,120,.24)),
+      repeating-linear-gradient(45deg, #e8f3ff 0 10px, #f8fffb 10px 20px);
+  }
+  .featured-post__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .featured-post__body {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .blog-badge {
+    display: inline-flex;
+    width: max-content;
+    align-items: center;
+    border-radius: 999px;
+    padding: 7px 11px;
+    color: #0b5f54;
+    background: #e9fbf5;
+    font-size: .8rem;
+    font-weight: 900;
+  }
+  .featured-post__title {
+    margin: 14px 0 10px;
+    color: var(--ink);
+    font-size: clamp(1.6rem, 3vw, 2.35rem);
+    line-height: 1.08;
+    font-weight: 950;
+  }
+  .featured-post__excerpt,
+  .post-card__excerpt,
+  .blog-side__text {
+    color: var(--muted);
+  }
+  .blog-meta {
+    color: #7a8797;
+    font-size: .9rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .blog-btn {
+    display: inline-flex;
+    width: max-content;
+    align-items: center;
+    justify-content: center;
+    margin-top: 18px;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    font-weight: 900;
+    box-shadow: 0 12px 24px rgba(29,112,214,.18);
+  }
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .post-card {
+    overflow: hidden;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(20, 51, 81, .08);
+    box-shadow: 0 14px 34px rgba(20, 51, 81, .08);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 22px 44px rgba(20, 51, 81, .13);
+  }
+  .post-card__image {
+    height: 168px;
+    background:
+      linear-gradient(135deg, rgba(29,112,214,.18), rgba(14,148,120,.18)),
+      repeating-linear-gradient(45deg, #f3f8ff 0 9px, #f9fffb 9px 18px);
+  }
+  .post-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .post-card__body {
+    padding: 18px;
+  }
+  .post-card__title {
+    color: var(--ink);
+    font-size: 1.12rem;
+    font-weight: 900;
+    line-height: 1.22;
+    margin: 10px 0 8px;
+  }
+  .blog-side {
+    display: grid;
+    gap: 16px;
+    position: sticky;
+    top: 84px;
+  }
+  .blog-side__card {
+    border-radius: 22px;
+    background: #fff;
+    border: 1px solid rgba(20, 51, 81, .08);
+    box-shadow: 0 16px 38px rgba(20, 51, 81, .08);
+    overflow: hidden;
+  }
+  .blog-side__header {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(20, 51, 81, .08);
+  }
+  .blog-side__title {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.05rem;
+    font-weight: 950;
+  }
+  .blog-side__body {
+    padding: 16px 20px 20px;
+  }
+  .important-link {
+    display: block;
+    padding: 13px;
+    border-radius: 15px;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid rgba(20, 51, 81, .08);
+    background: #f8fafc;
+    transition: transform .18s ease, background .18s ease;
+  }
+  .important-link + .important-link {
+    margin-top: 10px;
+  }
+  .important-link:hover {
+    transform: translateX(4px);
+    background: #edf8ff;
+  }
+  .important-link__title {
+    color: var(--ink);
+    font-weight: 900;
+  }
+  .important-link__meta {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: .88rem;
+  }
+  .notice-item,
+  .event-item {
+    padding: 14px;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px solid rgba(20, 51, 81, .08);
+  }
+  .notice-item + .notice-item,
+  .event-item + .event-item {
+    margin-top: 10px;
+  }
+  .notice-item__title,
+  .event-item__title {
+    margin: 0 0 5px;
+    color: var(--ink);
+    font-weight: 950;
+  }
+  .event-date {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    float: left;
+    width: 54px;
+    height: 54px;
+    margin-right: 12px;
+    border-radius: 16px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue), var(--teal));
+    font-weight: 950;
+  }
+  .event-date small {
+    font-size: .66rem;
+    text-transform: uppercase;
+  }
+  .empty-state {
+    padding: 26px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px dashed rgba(20, 51, 81, .2);
+    color: var(--muted);
+  }
+  @media (max-width: 1000px) {
+    .blog-layout,
+    .featured-post,
+    .blog-carousel__slide {
+      grid-template-columns: 1fr;
+    }
+    .blog-side {
+      position: static;
+    }
+  }
+  @media (max-width: 720px) {
+    .blog-hero {
+      padding: 24px;
+    }
+    .post-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="container mt-4 blog-page">
+  <section class="blog-hero">
+    <div class="blog-hero__content">
+      <div>
+        <div class="blog-hero__eyebrow">
+          <i class="bi bi-megaphone"></i> Notícias, avisos e estudo
+        </div>
+        <h1 class="blog-hero__title">Central de comunicação do cursinho</h1>
+        <p class="blog-hero__subtitle">
+          Acompanhe comunicados da coordenação, materiais de apoio, dicas para o ENEM e links úteis para estudar melhor.
+        </p>
+      </div>
+      <div class="blog-hero__stat">
+        <strong>{{ posts_count }}</strong>
+        <span>publicação{{ posts_count|pluralize:"ões" }}</span>
+      </div>
+    </div>
+  </section>
+
+  <nav class="blog-filter" aria-label="Categorias do blog">
+    <a href="{% url 'blog:blog_list' %}" class="blog-filter__item {% if not category %}is-active{% endif %}">
+      Todos
+    </a>
+    {% for cat_code, cat_name in categories %}
+      <a href="?category={{ cat_code }}" class="blog-filter__item {% if category == cat_code %}is-active{% endif %}">
+        {{ cat_name }}
+      </a>
+    {% endfor %}
+  </nav>
+
+  {% if carousel_posts %}
+    <section class="blog-carousel" data-blog-carousel aria-label="Destaques do blog">
+      <div class="blog-carousel__track" data-carousel-track>
+        {% for post in carousel_posts %}
+          <article class="blog-carousel__slide">
+            <div class="blog-carousel__media">
+              {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+              {% endif %}
+            </div>
+            <div class="blog-carousel__content">
+              <span class="blog-carousel__label">
+                <i class="bi bi-newspaper"></i> {{ post.get_category_display }}
+              </span>
+              <h2 class="blog-carousel__title">{{ post.title }}</h2>
+              <p class="blog-carousel__excerpt">{{ post.excerpt|default:post.content|truncatewords:30 }}</p>
+              <div class="blog-meta" style="color: rgba(255,255,255,.78);">
+                <span><i class="bi bi-calendar3"></i> {{ post.publish_date|date:"d/m/Y" }}</span>
+                <span><i class="bi bi-eye"></i> {{ post.views_count }} visualizações</span>
+              </div>
+              <a href="{% url 'blog:blog_detail' post.slug %}" class="blog-btn">Abrir destaque</a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      <div class="blog-carousel__dots" aria-label="Selecionar destaque">
+        {% for post in carousel_posts %}
+          <button type="button" class="blog-carousel__dot {% if forloop.first %}is-active{% endif %}" data-carousel-dot="{{ forloop.counter0 }}" aria-label="Ir para destaque {{ forloop.counter }}"></button>
+        {% endfor %}
+      </div>
+      <div class="blog-carousel__controls">
+        <button type="button" class="blog-carousel__button" data-carousel-prev aria-label="Destaque anterior">‹</button>
+        <button type="button" class="blog-carousel__button" data-carousel-next aria-label="Próximo destaque">›</button>
+      </div>
+    </section>
+  {% endif %}
+
+  <div class="blog-layout">
+    <main>
+      {% if featured_post %}
+        <article class="featured-post">
+          <div class="featured-post__image">
+            {% if featured_post.featured_image %}
+              <img src="{{ featured_post.featured_image.url }}" alt="{{ featured_post.title }}">
+            {% endif %}
+          </div>
+          <div class="featured-post__body">
+            <span class="blog-badge">{{ featured_post.get_category_display }}</span>
+            <h2 class="featured-post__title">{{ featured_post.title }}</h2>
+            <p class="featured-post__excerpt">{{ featured_post.excerpt|default:featured_post.content|truncatewords:34 }}</p>
+            <div class="blog-meta">
+              <span><i class="bi bi-calendar3"></i> {{ featured_post.publish_date|date:"d/m/Y" }}</span>
+              <span><i class="bi bi-eye"></i> {{ featured_post.views_count }} visualizações</span>
+            </div>
+            <a href="{% url 'blog:blog_detail' featured_post.slug %}" class="blog-btn">Ler destaque</a>
+          </div>
+        </article>
+      {% endif %}
+
+      {% if posts %}
+        <div class="post-grid">
+          {% for post in posts %}
+            <article class="post-card">
+              <div class="post-card__image">
+                {% if post.featured_image %}
+                  <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                {% endif %}
+              </div>
+              <div class="post-card__body">
+                <span class="blog-badge">{{ post.get_category_display }}</span>
+                <h3 class="post-card__title">{{ post.title }}</h3>
+                <p class="post-card__excerpt">{{ post.excerpt|default:post.content|truncatewords:22 }}</p>
+                <div class="blog-meta">
+                  <span><i class="bi bi-calendar3"></i> {{ post.publish_date|date:"d/m/Y" }}</span>
+                  <span><i class="bi bi-eye"></i> {{ post.views_count }}</span>
+                </div>
+                <a href="{% url 'blog:blog_detail' post.slug %}" class="blog-btn">Ler mais</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% elif not featured_post %}
+        <div class="empty-state">
+          <i class="bi bi-info-circle"></i> Nenhuma publicação disponível para este filtro.
+        </div>
+      {% endif %}
+    </main>
+
+    <aside class="blog-side">
+      <section class="blog-side__card">
+        <div class="blog-side__header">
+          <h2 class="blog-side__title"><i class="bi bi-broadcast-pin text-danger"></i> Avisos recentes</h2>
+        </div>
+        <div class="blog-side__body">
+          {% if panel_notices %}
+            {% for notice in panel_notices %}
+              <article class="notice-item">
+                <div class="d-flex justify-content-between gap-2">
+                  <h3 class="notice-item__title">{{ notice.title }}</h3>
+                  {% if notice.is_featured %}<span class="badge bg-warning text-dark">Destaque</span>{% endif %}
+                </div>
+                <p class="blog-side__text mb-1">{{ notice.summary|default:notice.content|truncatewords:18 }}</p>
+                <div class="blog-meta">
+                  <span>{{ notice.get_category_display }}</span>
+                  <span>{{ notice.published_at|date:"d/m/Y" }}</span>
+                </div>
+              </article>
+            {% endfor %}
+          {% else %}
+            <p class="blog-side__text mb-0">Nenhum aviso institucional disponível agora.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="blog-side__card">
+        <div class="blog-side__header">
+          <h2 class="blog-side__title"><i class="bi bi-calendar-event text-success"></i> Próximos eventos</h2>
+        </div>
+        <div class="blog-side__body">
+          {% if upcoming_events %}
+            {% for event in upcoming_events %}
+              <article class="event-item">
+                <div class="event-date">
+                  <strong>{{ event.starts_at|date:"d" }}</strong>
+                  <small>{{ event.starts_at|date:"M" }}</small>
+                </div>
+                <h3 class="event-item__title">{{ event.title }}</h3>
+                <p class="blog-side__text mb-1">
+                  {{ event.get_event_type_display }} · {{ event.starts_at|date:"H:i" }}
+                  {% if event.location %} · {{ event.location }}{% endif %}
+                </p>
+                <div class="blog-meta">
+                  <span>{{ event.get_audience_display }}</span>
+                  {% if event.turma %}<span>{{ event.turma }}</span>{% endif %}
+                </div>
+                <div style="clear: both;"></div>
+              </article>
+            {% endfor %}
+          {% else %}
+            <p class="blog-side__text mb-0">Nenhum evento futuro cadastrado.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="blog-side__card">
+        <div class="blog-side__header">
+          <h2 class="blog-side__title"><i class="bi bi-stars text-warning"></i> Links em destaque</h2>
+        </div>
+        <div class="blog-side__body">
+          {% if featured_links %}
+            {% for link in featured_links %}
+              <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="important-link">
+                <div class="important-link__title">
+                  <i class="bi {{ link.icon|default:'bi-box-arrow-up-right' }} text-primary"></i>
+                  {{ link.title }}
+                </div>
+                <div class="important-link__meta">{{ link.description|default:link.get_category_display|truncatewords:16 }}</div>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="blog-side__text mb-0">Nenhum link destacado no momento.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="blog-side__card">
+        <div class="blog-side__header">
+          <h2 class="blog-side__title"><i class="bi bi-link-45deg text-primary"></i> Links importantes</h2>
+        </div>
+        <div class="blog-side__body">
+          {% if important_links %}
+            {% for link in important_links %}
+              <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="important-link">
+                <div class="important-link__title">
+                  <i class="bi {{ link.icon|default:'bi-box-arrow-up-right' }} text-primary"></i>
+                  {{ link.title }}
+                </div>
+                <div class="important-link__meta">
+                  {{ link.get_category_display }}
+                  {% if link.description %} • {{ link.description|truncatewords:12 }}{% endif %}
+                </div>
+              </a>
+            {% endfor %}
+          {% else %}
+            <p class="blog-side__text mb-0">Nenhum link importante disponível.</p>
+          {% endif %}
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const carousel = document.querySelector('[data-blog-carousel]');
+    if (!carousel) return;
+
+    const track = carousel.querySelector('[data-carousel-track]');
+    const dots = Array.from(carousel.querySelectorAll('[data-carousel-dot]'));
+    const prev = carousel.querySelector('[data-carousel-prev]');
+    const next = carousel.querySelector('[data-carousel-next]');
+    let current = 0;
+
+    function goTo(index) {
+      if (!dots.length) return;
+      current = (index + dots.length) % dots.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle('is-active', dotIndex === current);
+      });
+    }
+
+    prev && prev.addEventListener('click', () => goTo(current - 1));
+    next && next.addEventListener('click', () => goTo(current + 1));
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => goTo(Number(dot.dataset.carouselDot || 0)));
+    });
+
+    window.setInterval(() => goTo(current + 1), 7000);
+  })();
+</script>
+{% endblock %}

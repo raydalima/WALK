@@ -1,0 +1,123 @@
+[
+  {
+    "model": "courses.areaconhecimento",
+    "pk": 1,
+    "fields": {
+      "nome": "LINGUAGENS",
+      "cor_identificacao": "#0d6efd"
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 10,
+    "fields": {
+      "area": 1,
+      "nome": "Língua Portuguesa",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 11,
+    "fields": {
+      "area": 1,
+      "nome": "Literatura",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 12,
+    "fields": {
+      "area": 1,
+      "nome": "Inglês",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.areaconhecimento",
+    "pk": 2,
+    "fields": {
+      "nome": "HUMANAS",
+      "cor_identificacao": "#198754"
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 20,
+    "fields": {
+      "area": 2,
+      "nome": "História",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 21,
+    "fields": {
+      "area": 2,
+      "nome": "Geografia",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.areaconhecimento",
+    "pk": 3,
+    "fields": {
+      "nome": "NATUREZA",
+      "cor_identificacao": "#dc3545"
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 30,
+    "fields": {
+      "area": 3,
+      "nome": "Biologia",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 31,
+    "fields": {
+      "area": 3,
+      "nome": "Química",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.areaconhecimento",
+    "pk": 4,
+    "fields": {
+      "nome": "MATEMATICA",
+      "cor_identificacao": "#ffc107"
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 40,
+    "fields": {
+      "area": 4,
+      "nome": "Matemática",
+      "descricao": ""
+    }
+  },
+  {
+    "model": "courses.areaconhecimento",
+    "pk": 5,
+    "fields": {
+      "nome": "REDACAO",
+      "cor_identificacao": "#6f42c1"
+    }
+  },
+  {
+    "model": "courses.disciplina",
+    "pk": 50,
+    "fields": {
+      "area": 5,
+      "nome": "Redação",
+      "descricao": ""
+    }
+  }
+]

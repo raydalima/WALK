@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load form_extras %}
+
+{% block title %}Minhas Atividades{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-0"><i class="bi bi-journal-check text-primary"></i> Minhas Atividades</h2>
+      <p class="text-muted mb-0">Envie atividades por link externo, sem upload no sistema.</p>
+    </div>
+    <a href="{% url 'students:dashboard' %}" class="btn btn-outline-secondary">Painel</a>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label">Filtrar por status</label>
+          <select name="status" class="form-control">
+            <option value="">Todos</option>
+            {% for value, label in status_choices %}
+              <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-primary w-100" type="submit">Filtrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if activities %}
+    <div class="row">
+      {% for activity in activities %}
+        {% with result=results|get_item:activity.id %}
+          <div class="col-md-6 mb-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">{{ activity.title }}</h5>
+                <p class="card-text text-muted">
+                  {{ activity.turma }}
+                  {% if activity.course %} • {{ activity.course.nome }}{% endif %}
+                </p>
+                {% if activity.description %}
+                  <p class="card-text">{{ activity.description|truncatewords:24 }}</p>
+                {% endif %}
+                <p class="card-text">
+                  <strong>Situação:</strong>
+                  {% if result %}{{ result.get_status_display }}{% else %}Pendente{% endif %}
+                </p>
+                {% if result and result.submitted_at %}
+                  <p class="card-text"><small class="text-muted">Enviada em {{ result.submitted_at|date:"d/m/Y H:i" }}</small></p>
+                {% endif %}
+                {% if result and result.teacher_feedback %}
+                  <div class="alert alert-light border">
+                    <strong>Feedback:</strong><br>{{ result.teacher_feedback|linebreaksbr }}
+                  </div>
+                {% endif %}
+                <div class="d-flex gap-2 flex-wrap">
+                  <a class="btn btn-primary" href="{% url 'students:activity_submit' activity.id %}">
+                    {% if result and result.submission_url %}Atualizar envio{% else %}Enviar atividade{% endif %}
+                  </a>
+                  {% if result and result.submission_url %}
+                    <a class="btn btn-outline-primary" href="{{ result.submission_url }}" target="_blank" rel="noopener noreferrer">Abrir meu link</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">Nenhuma atividade encontrada para sua turma no momento.</div>
+  {% endif %}
+</div>
+{% endblock %}

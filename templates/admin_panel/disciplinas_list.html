@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Disciplinas - Painel{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2>Disciplinas</h2>
+  <ul class="list-group">
+    {% for d in disciplinas %}
+      <li class="list-group-item">{{ d.name|default:d }}</li>
+    {% empty %}
+      <li class="list-group-item">Nenhuma disciplina.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

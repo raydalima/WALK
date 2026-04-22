@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Enviar Atividade{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 860px;">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-0"><i class="bi bi-link-45deg text-primary"></i> Enviar Atividade</h2>
+      <p class="text-muted mb-0">{{ activity.title }} • {{ activity.turma }}</p>
+    </div>
+    <a href="{% url 'students:activity_list' %}" class="btn btn-outline-secondary">Voltar</a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      {% if activity.description %}
+        <p>{{ activity.description|linebreaksbr }}</p>
+      {% endif %}
+      <div class="alert alert-info mb-0">
+        Cole o link da sua atividade no Google Docs, Google Drive, Dropbox ou outra nuvem.
+        Certifique-se de que o documento esteja compartilhado com permissão de visualização para o professor.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Salvar envio</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

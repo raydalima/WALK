@@ -1,0 +1,224 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Conteúdos{% endblock %}
+
+{% block teacher_content %}
+<style>
+  .teacher-content-hub {
+    display: grid;
+    gap: 18px;
+  }
+  .teacher-content-hero {
+    background: linear-gradient(135deg, #153b6d 0%, #2563eb 100%);
+    color: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 18px 40px rgba(17, 45, 78, 0.14);
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .teacher-content-hero__title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+  .teacher-content-hero__subtitle {
+    margin: 10px 0 0;
+    max-width: 700px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .teacher-content-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .teacher-content-summary__card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 12px 28px rgba(17, 45, 78, 0.08);
+  }
+  .teacher-content-summary__label {
+    color: #607086;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .teacher-content-summary__value {
+    margin-top: 6px;
+    color: #143351;
+    font-size: 1.7rem;
+    font-weight: 800;
+  }
+  .teacher-content-course {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 14px 34px rgba(17, 45, 78, 0.08);
+    overflow: hidden;
+  }
+  .teacher-content-course__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .teacher-content-course__title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #163457;
+  }
+  .teacher-content-course__subtitle {
+    margin: 6px 0 0;
+    color: #607086;
+  }
+  .teacher-content-course__badge {
+    background: #edf4ff;
+    color: #1d4ed8;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  .teacher-content-course__body {
+    padding: 22px 24px 24px;
+  }
+  .teacher-content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .teacher-material-card {
+    border: 1px solid rgba(17, 45, 78, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    background: #fbfdff;
+    display: grid;
+    gap: 12px;
+  }
+  .teacher-material-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #163457;
+  }
+  .teacher-material-card__meta {
+    color: #607086;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .teacher-material-card__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .teacher-material-empty {
+    padding: 18px;
+    border-radius: 14px;
+    background: #f8fafc;
+    color: #607086;
+  }
+  @media (max-width: 900px) {
+    .teacher-content-summary {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="teacher-content-hub">
+  <section class="teacher-content-hero">
+    <div>
+      <h2 class="teacher-content-hero__title">Biblioteca do professor</h2>
+      <p class="teacher-content-hero__subtitle">
+        Visualize rapidamente os conteúdos publicados por link externo. Os arquivos ficam em nuvem, mantendo o sistema leve.
+      </p>
+    </div>
+    <a class="t-btn t-btn--ghost" href="{% url 'teachers:my_courses' %}">Ver minhas disciplinas</a>
+  </section>
+
+  <section class="teacher-content-summary">
+    <div class="teacher-content-summary__card">
+      <div class="teacher-content-summary__label">Disciplinas</div>
+      <div class="teacher-content-summary__value">{{ materials_by_course|length }}</div>
+    </div>
+    <div class="teacher-content-summary__card">
+      <div class="teacher-content-summary__label">Conteúdos mapeados</div>
+      <div class="teacher-content-summary__value">{{ total_materials }}</div>
+    </div>
+    <div class="teacher-content-summary__card">
+      <div class="teacher-content-summary__label">Disciplinas com conteúdo</div>
+      <div class="teacher-content-summary__value">{{ courses_with_materials }}</div>
+    </div>
+  </section>
+
+  {% if not material_model_found %}
+    <div class="teacher-material-empty">
+      Nenhum model de conteúdo encontrado no app <strong>materials</strong>.
+    </div>
+  {% endif %}
+
+  {% if materials_by_course %}
+    {% for course, materials in materials_by_course %}
+      <section class="teacher-content-course">
+        <div class="teacher-content-course__header">
+          <div>
+            <h3 class="teacher-content-course__title">{{ course }}</h3>
+            <p class="teacher-content-course__subtitle">
+              {{ course.area|default:"Área não informada" }}
+            </p>
+          </div>
+          <span class="teacher-content-course__badge">{{ materials|length }} conteúdo{{ materials|length|pluralize }}</span>
+        </div>
+
+        <div class="teacher-content-course__body">
+          {% if materials %}
+            <div class="teacher-content-grid">
+              {% for m in materials %}
+                <article class="teacher-material-card">
+                  <div class="teacher-material-card__title">{{ m.title|default:"Material sem título" }}</div>
+                  <div class="teacher-material-card__meta">
+                    {{ m.get_material_type_display }}
+                    {% if m.upload_date %} • {{ m.upload_date|date:"d/m/Y" }}{% endif %}
+                    • {{ m.get_file_size }}
+                  </div>
+                  {% if m.description %}
+                    <div class="teacher-material-card__meta">{{ m.description|truncatewords:22 }}</div>
+                  {% endif %}
+                  <div class="teacher-material-card__actions">
+                    {% if m.has_resource %}
+                      <a
+                        class="t-btn t-btn--ghost"
+                        href="{{ m.access_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Abrir material
+                      </a>
+                    {% else %}
+                      <span class="teacher-material-card__meta">Sem arquivo ou link disponível</span>
+                    {% endif %}
+                    <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_materials' course.id %}">Gerenciar</a>
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="teacher-material-empty">
+              Sem conteúdos cadastrados nesta disciplina ainda.
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    {% endfor %}
+  {% else %}
+    <div class="teacher-material-empty">
+      Nenhuma disciplina encontrada.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

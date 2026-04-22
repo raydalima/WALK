@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Comunicação por E-mail{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-0"><i class="bi bi-envelope-paper text-primary"></i> Comunicação por E-mail</h2>
+      <p class="text-muted mb-0">Envie avisos, orientações e comunicados com histórico rastreável.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{% url 'admin_panel:email_individual_create' %}" class="btn btn-primary">Envio individual</a>
+      <a href="{% url 'admin_panel:email_bulk_create' %}" class="btn btn-outline-primary">Envio em massa</a>
+      <a href="{% url 'admin_panel:email_templates_list' %}" class="btn btn-outline-secondary">Modelos</a>
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    Em envios em massa, o sistema envia uma mensagem por destinatário para não expor a lista de e-mails.
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+        <div class="col-md-6">
+          <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Buscar por assunto, mensagem ou remetente">
+        </div>
+        <div class="col-md-3">
+          <select name="status" class="form-control">
+            <option value="">Todas as situações</option>
+            {% for value, label in status_choices %}
+              <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-primary w-100" type="submit">Filtrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Assunto</th>
+            <th>Tipo</th>
+            <th>Grupo</th>
+            <th>Situação</th>
+            <th>Destinatários</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for communication in communications %}
+            <tr>
+              <td>
+                {% if communication.sent_at %}
+                  {{ communication.sent_at|date:"d/m/Y H:i" }}
+                {% elif communication.scheduled_at %}
+                  Agendado: {{ communication.scheduled_at|date:"d/m/Y H:i" }}
+                {% else %}
+                  {{ communication.created_at|date:"d/m/Y H:i" }}
+                {% endif %}
+              </td>
+              <td>{{ communication.subject }}</td>
+              <td>{{ communication.get_send_type_display }}</td>
+              <td>{{ communication.get_recipient_group_display }}</td>
+              <td><span class="badge bg-secondary">{{ communication.get_status_display }}</span></td>
+              <td>{{ communication.successful_recipients }}/{{ communication.total_recipients }}</td>
+              <td>
+                <a href="{% url 'admin_panel:email_communication_detail' communication.id %}" class="btn btn-sm btn-outline-primary">Detalhes</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-4">Nenhum e-mail enviado ainda.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

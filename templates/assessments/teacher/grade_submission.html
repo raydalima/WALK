@@ -1,0 +1,199 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Corrigir envio{% endblock %}
+
+{% block teacher_content %}
+<style>
+  .submission-review {
+    display: grid;
+    gap: 18px;
+  }
+  .submission-review__meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .submission-review__meta-card,
+  .submission-review__card,
+  .submission-answer {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 14px 34px rgba(17, 45, 78, 0.08);
+  }
+  .submission-review__meta-card {
+    padding: 18px;
+  }
+  .submission-review__meta-label {
+    color: #607086;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .submission-review__meta-value {
+    margin-top: 6px;
+    color: #143351;
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+  .submission-review__card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .submission-review__card-body {
+    padding: 24px;
+  }
+  .submission-answer {
+    padding: 20px;
+    border: 1px solid rgba(17, 45, 78, 0.06);
+  }
+  .submission-answer + .submission-answer {
+    margin-top: 16px;
+  }
+  .submission-answer__label {
+    color: #607086;
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .submission-answer__title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #143351;
+    margin-bottom: 12px;
+  }
+  .submission-answer__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(280px, 1fr);
+    gap: 18px;
+  }
+  .submission-answer__response {
+    background: #f8fbff;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .submission-answer__form {
+    display: grid;
+    gap: 12px;
+  }
+  .submission-answer__form label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #17324d;
+  }
+  .submission-answer__help {
+    color: #607086;
+    font-size: 0.92rem;
+    margin-top: 8px;
+  }
+  .submission-review__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  @media (max-width: 900px) {
+    .submission-review__meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .submission-answer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .submission-review__meta {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="submission-review">
+  <div class="submission-review__meta">
+    <div class="submission-review__meta-card">
+      <div class="submission-review__meta-label">Aluno</div>
+      <div class="submission-review__meta-value">{{ submission.student.user.get_full_name|default:submission.student.user.username }}</div>
+    </div>
+    <div class="submission-review__meta-card">
+      <div class="submission-review__meta-label">Questionário</div>
+      <div class="submission-review__meta-value">{{ submission.quiz.title }}</div>
+    </div>
+    <div class="submission-review__meta-card">
+      <div class="submission-review__meta-label">Tentativa</div>
+      <div class="submission-review__meta-value">#{{ submission.attempt }}</div>
+    </div>
+    <div class="submission-review__meta-card">
+      <div class="submission-review__meta-label">Situação</div>
+      <div class="submission-review__meta-value">{{ submission.get_status_display }}</div>
+    </div>
+  </div>
+
+  <div class="submission-review__card">
+    <div class="submission-review__card-header">
+      <div>
+        <h2 class="t-card__title" style="margin:0;">
+          Visualizar e editar envio
+        </h2>
+        <div class="t-list__subtitle" style="margin-top:6px;">
+          O professor pode revisar a resposta enviada, ajustar o conteúdo quando necessário e salvar a correção com feedback.
+        </div>
+      </div>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:submission_list' submission.quiz.id %}">Voltar aos envios</a>
+    </div>
+
+    <div class="submission-review__card-body">
+      <form method="post">
+        {% csrf_token %}
+
+        {% for a in answers %}
+          <section class="submission-answer">
+            <div class="submission-answer__label">Questão {{ a.question.order }} • {{ a.question.get_type_display }}</div>
+            <div class="submission-answer__title">{{ a.question.text }}</div>
+
+            <div class="submission-answer__grid">
+              <div class="submission-answer__response">
+                <div class="submission-answer__label">Resposta do aluno</div>
+
+                {% if a.question.type == 'MCQ' or a.question.type == 'TF' %}
+                  {{ form["answer_choice_"|add:a.id] }}
+                  {% if a.auto_score is not None %}
+                    <div class="submission-answer__help">Correção automática atual: {{ a.auto_score }}</div>
+                  {% endif %}
+                {% else %}
+                  {{ form["answer_text_"|add:a.id] }}
+                  {% if a.question.correct_text %}
+                    <div class="submission-answer__help">
+                      Gabarito de referência: {{ a.question.correct_text }}
+                    </div>
+                  {% endif %}
+                {% endif %}
+              </div>
+
+              <div class="submission-answer__form">
+                <div>
+                  <label>Nota</label>
+                  {{ form["score_"|add:a.id] }}
+                </div>
+                <div>
+                  <label>Feedback</label>
+                  {{ form["fb_"|add:a.id] }}
+                </div>
+              </div>
+            </div>
+          </section>
+        {% endfor %}
+
+        <div class="submission-review__actions">
+          <button class="t-btn t-btn--primary" type="submit">Salvar edição e correção</button>
+          <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:submission_list' submission.quiz.id %}">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

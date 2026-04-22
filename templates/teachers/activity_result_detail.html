@@ -1,0 +1,41 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Corrigir Atividade{% endblock %}
+
+{% block teacher_content %}
+<div class="t-grid">
+  <div class="t-card" style="grid-column: span 2;">
+    <div class="t-card__header">
+      <div>
+        <h2 class="t-card__title">{{ activity.title }}</h2>
+        <div class="t-list__subtitle">{{ student.user.get_full_name|default:student.user.username }}</div>
+      </div>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:activity_submissions_detail' activity.id %}">Voltar</a>
+    </div>
+    <div class="t-card__body">
+      {% if result.submission_url %}
+        <p>
+          <a class="t-btn t-btn--primary" href="{{ result.submission_url }}" target="_blank" rel="noopener noreferrer">Ver atividade</a>
+        </p>
+        {% if result.submitted_at %}
+          <p class="t-list__subtitle">Enviada em {{ result.submitted_at|date:"d/m/Y H:i" }}</p>
+        {% endif %}
+      {% else %}
+        <div class="t-empty">Este aluno ainda não enviou link para esta atividade.</div>
+      {% endif %}
+
+      {% if result.notes %}
+        <div class="t-empty" style="text-align:left;">
+          <strong>Observação do aluno:</strong><br>{{ result.notes|linebreaksbr }}
+        </div>
+      {% endif %}
+
+      <form method="post" style="margin-top:18px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="t-btn t-btn--primary" type="submit">Salvar correção</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

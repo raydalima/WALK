@@ -1,0 +1,220 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Marcar frequência{% endblock %}
+
+{% block teacher_content %}
+<style>
+  .attendance-session {
+    display: grid;
+    gap: 18px;
+  }
+  .attendance-session__summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .attendance-summary-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 14px 30px rgba(17, 45, 78, 0.08);
+    padding: 18px;
+  }
+  .attendance-summary-card__label {
+    color: #607086;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .attendance-summary-card__value {
+    color: #143351;
+    font-size: 1.65rem;
+    font-weight: 800;
+    margin-top: 6px;
+  }
+  .attendance-session__card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 14px 34px rgba(17, 45, 78, 0.08);
+    overflow: hidden;
+  }
+  .attendance-session__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .attendance-session__title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .attendance-session__subtitle {
+    margin: 6px 0 0;
+    color: #5d6d82;
+  }
+  .attendance-session__body {
+    padding: 24px;
+  }
+  .attendance-toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .attendance-toolbar .t-btn {
+    cursor: pointer;
+  }
+  .attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .attendance-table th,
+  .attendance-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+    text-align: left;
+    vertical-align: middle;
+  }
+  .attendance-table th {
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #607086;
+  }
+  .attendance-name {
+    font-weight: 700;
+    color: #15304f;
+  }
+  .attendance-status select {
+    min-width: 170px;
+  }
+  .attendance-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  @media (max-width: 900px) {
+    .attendance-session__summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 640px) {
+    .attendance-session__summary {
+      grid-template-columns: 1fr;
+    }
+    .attendance-table,
+    .attendance-table tbody,
+    .attendance-table tr,
+    .attendance-table td {
+      display: block;
+      width: 100%;
+    }
+    .attendance-table thead {
+      display: none;
+    }
+    .attendance-table tr {
+      border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+      padding: 10px 0;
+    }
+    .attendance-table td {
+      border: none;
+      padding: 8px 0;
+    }
+  }
+</style>
+
+<div class="attendance-session">
+  <div class="attendance-session__summary">
+    <div class="attendance-summary-card">
+      <div class="attendance-summary-card__label">Total de alunos</div>
+      <div class="attendance-summary-card__value">{{ total_students }}</div>
+    </div>
+    <div class="attendance-summary-card">
+      <div class="attendance-summary-card__label">Presentes</div>
+      <div class="attendance-summary-card__value">{{ present_count }}</div>
+    </div>
+    <div class="attendance-summary-card">
+      <div class="attendance-summary-card__label">Faltas</div>
+      <div class="attendance-summary-card__value">{{ absent_count }}</div>
+    </div>
+    <div class="attendance-summary-card">
+      <div class="attendance-summary-card__label">Justificados</div>
+      <div class="attendance-summary-card__value">{{ justified_count }}</div>
+    </div>
+  </div>
+
+  <div class="attendance-session__card">
+    <div class="attendance-session__header">
+      <div>
+        <h2 class="attendance-session__title">{{ session.course }} • {{ session.date|date:"d/m/Y" }}</h2>
+        <p class="attendance-session__subtitle">
+          {% if session.turma %}Turma {{ session.turma }} • {% endif %}
+          {% if session.content_taught %}{{ session.content_taught|truncatewords:18 }}{% else %}Registre a presença dos alunos desta aula.{% endif %}
+        </p>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_session_csv' session.id %}">Exportar CSV</a>
+        <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_session_pdf' session.id %}">Exportar PDF</a>
+      </div>
+    </div>
+
+    <div class="attendance-session__body">
+      <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="attendance-toolbar">
+          <button type="button" class="t-btn t-btn--ghost js-fill-status" data-status="P">Marcar todos como presentes</button>
+          <button type="button" class="t-btn t-btn--ghost js-fill-status" data-status="A">Marcar todos como faltas</button>
+          <button type="button" class="t-btn t-btn--ghost js-fill-status" data-status="J">Marcar todos como justificados</button>
+        </div>
+
+        <table class="attendance-table">
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for f in formset %}
+              <tr>
+                <td>
+                  {{ f.student_id }}
+                  <div class="attendance-name">{{ f.name.value }}</div>
+                </td>
+                <td class="attendance-status">{{ f.status }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="attendance-actions">
+          <button class="t-btn t-btn--primary" type="submit">Salvar frequência</button>
+          <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_course' session.course_id %}">Voltar para aulas</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const fillButtons = document.querySelectorAll('.js-fill-status');
+    const selects = document.querySelectorAll('.attendance-status select');
+
+    fillButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        const status = button.dataset.status;
+        selects.forEach(function (select) {
+          select.value = status;
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

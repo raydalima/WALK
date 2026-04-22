@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}Nova Matrícula{% endblock %}
+{% block content %}
+<style>
+.form-section { border-radius:12px; padding:20px; box-shadow:0 10px 30px rgba(20,40,80,0.06); background:#fff; border:1px solid rgba(30,60,120,0.04); }
+.form-section h5 { font-weight:700; color:#0f4eb8; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+.form-section h5 .section-ico{ background:#fff; border-radius:8px; padding:8px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(20,40,80,0.04); }
+.input-icon { display:flex; align-items:center; gap:10px; }
+.input-icon .bi { color:#2b7cff; font-size:1.1rem; }
+.form-control, .form-select { border-radius:10px; padding:10px 12px; border:1px solid rgba(20,40,80,0.08); transition: box-shadow .12s ease, border-color .12s ease; }
+.form-control:focus, .form-select:focus { outline: none; box-shadow: 0 8px 24px rgba(43,124,255,0.12); border-color: rgba(43,124,255,0.28); }
+.form-actions { display:flex; gap:12px; align-items:center; }
+.details-collapse { cursor:pointer; color:#1752c3; font-weight:600; }
+.card{ background:transparent; }
+.btn-primary { background: linear-gradient(90deg,#2b7cff,#1752c3); border: none; }
+.btn-outline-secondary { border-radius:8px; }
+.required-star{ color:#d9534f; margin-left:6px; }
+.small-help{ font-size:0.85rem; color:#6c757d; }
+@media(max-width:767px){ .form-actions{ flex-direction:column; } .form-actions .btn{ width:100%; } }
+</style>
+
+<div class="container my-5">
+  <h2 class="mb-3">Nova Matrícula</h2>
+  <form method="post">{% csrf_token %}
+    {% if enrollment_form.non_field_errors %}
+      <div class="alert alert-danger">{{ enrollment_form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="card mb-3 form-section">
+      <h5 class="mb-3"><i class="bi bi-person-circle me-2"></i> Dados Pessoais</h5>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Nome</label>
+          <div class="input-icon">
+            <i class="bi bi-person"></i>
+            {% if enrollment_form.first_name %}{{ enrollment_form.first_name }}{% endif %}
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Sobrenome</label>
+          <div class="input-icon">
+            <i class="bi bi-person-badge"></i>
+            {% if enrollment_form.last_name %}{{ enrollment_form.last_name }}{% endif %}
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Data de Nascimento</label>
+          <div class="input-icon">
+            <i class="bi bi-calendar-date"></i>
+            {% if enrollment_form.birth_date %}{{ enrollment_form.birth_date }}{% endif %}
+          </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Gênero</label>
+          {% if enrollment_form.gender %}{{ enrollment_form.gender }}{% endif %}
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">CPF</label>
+          <div class="input-icon">
+            <i class="bi bi-person-lines-fill"></i>
+            {% if enrollment_form.cpf %}{{ enrollment_form.cpf }}{% endif %}
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">RG</label>
+          <div class="input-icon">
+            <i class="bi bi-id-badge"></i>
+            {% if enrollment_form.rg %}{{ enrollment_form.rg }}{% endif %}
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Nome Social</label>
+          <div class="input-icon">
+            <i class="bi bi-person-circle"></i>
+            {% if enrollment_form.social_name %}{{ enrollment_form.social_name }}{% endif %}
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Pronomes</label>
+          {% if enrollment_form.pronouns %}{{ enrollment_form.pronouns }}{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3 form-section">
+      <h5 class="mb-3"><i class="bi bi-telephone me-2"></i> Contatos</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Telefone</label>
+          <div class="input-icon">
+            <i class="bi bi-telephone-fill"></i>
+            {% if enrollment_form.phone %}{{ enrollment_form.phone }}{% endif %}
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">E-mail</label>
+          <div class="input-icon">
+            <i class="bi bi-envelope"></i>
+            {% if enrollment_form.email %}{{ enrollment_form.email }}{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3 form-section">
+      <h5 class="mb-3"><i class="bi bi-people me-2"></i> Dados do Responsável</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Nome do Responsável</label>
+          {% if enrollment_form.responsible_name %}{{ enrollment_form.responsible_name }}{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Telefone do Responsável</label>
+          {% if enrollment_form.responsible_phone %}{{ enrollment_form.responsible_phone }}{% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">E-mail do responsável</label>
+          {% if enrollment_form.responsible_email %}{{ enrollment_form.responsible_email }}{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-3 form-section">
+      <h5 class="mb-3"><i class="bi bi-book-half me-2"></i> Perfil Escolar</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">{% if enrollment_form.previous_school %}{{ enrollment_form.previous_school.label_tag }}{{ enrollment_form.previous_school }}{% endif %}</div>
+        <div class="col-md-3 mb-3">{% if enrollment_form.previous_grade %}{{ enrollment_form.previous_grade.label_tag }}{{ enrollment_form.previous_grade }}{% endif %}</div>
+        <div class="col-md-3 mb-3">{% if enrollment_form.graduation_year %}{{ enrollment_form.graduation_year.label_tag }}{{ enrollment_form.graduation_year }}{% endif %}</div>
+      </div>
+    </div>
+
+    <div class="card mb-3 form-section">
+      <h5 class="mb-3"><i class="bi bi-exclamation-triangle me-2"></i> Contato de Emergência</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">{% if enrollment_form.emergency_contact_name %}{{ enrollment_form.emergency_contact_name.label_tag }}{{ enrollment_form.emergency_contact_name }}{% endif %}</div>
+        <div class="col-md-6 mb-3">{% if enrollment_form.emergency_contact_phone %}{{ enrollment_form.emergency_contact_phone.label_tag }}{{ enrollment_form.emergency_contact_phone }}{% endif %}</div>
+        <div class="col-md-6 mb-3">{% if enrollment_form.emergency_contact_relation %}{{ enrollment_form.emergency_contact_relation.label_tag }}{{ enrollment_form.emergency_contact_relation }}{% endif %}</div>
+      </div>
+    </div>
+
+    <div class="card mb-3 form-section">
+      <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i> Endereço</h5>
+      <div class="row">
+        <div class="col-md-8 mb-3">{% if enrollment_form.address %}{{ enrollment_form.address.label_tag }}{{ enrollment_form.address }}{% endif %}</div>
+        <div class="col-md-4 mb-3">{% if enrollment_form.city %}{{ enrollment_form.city.label_tag }}{{ enrollment_form.city }}{% endif %}</div>
+        <div class="col-md-3 mb-3">{% if enrollment_form.state %}{{ enrollment_form.state.label_tag }}{{ enrollment_form.state }}{% endif %}</div>
+        <div class="col-md-3 mb-3">{% if enrollment_form.zip_code %}{{ enrollment_form.zip_code.label_tag }}{{ enrollment_form.zip_code }}{% endif %}</div>
+      </div>
+    </div>
+
+    <details class="mb-3">
+      <summary class="details-collapse">Outros campos (clicar para expandir)</summary>
+      <div class="mt-3">
+        <div class="row">
+          {% for fname in enrollment_form.other_fields %}
+            <div class="col-md-6 mb-3">
+              {{ enrollment_form[fname].label_tag }}
+              {{ enrollment_form[fname] }}
+              {% if enrollment_form[fname].errors %}
+                <div class="text-danger small">{{ enrollment_form[fname].errors }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </details>
+
+    <div class="mt-3 form-actions">
+      <button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-save me-2"></i>Salvar Matrícula</button>
+      <a class="btn btn-outline-secondary btn-lg" href="{% url 'admin_panel:alunos_list' %}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

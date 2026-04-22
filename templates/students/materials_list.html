@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Materiais - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-file-earmark-pdf text-primary"></i> Materiais de Estudo
+    </h2>
+    
+    {% if materials %}
+        <div class="row">
+            {% for material in materials %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ material.title }}</h5>
+                            <p class="card-text">
+                                <span class="badge bg-primary">{{ material.course.nome }}</span>
+                                <span class="badge bg-secondary">{{ material.get_material_type_display }}</span>
+                            </p>
+                            {% if material.description %}
+                                <p class="card-text text-muted">{{ material.description|truncatewords:20 }}</p>
+                            {% endif %}
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Publicado em {{ material.upload_date|date:"d/m/Y" }} - link externo
+                                </small>
+                            </p>
+                            {% if material.has_resource %}
+                                <a href="{{ material.access_url }}" target="_blank" class="btn btn-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> Abrir Material
+                                </a>
+                            {% else %}
+                                <span class="text-muted small">Material sem link disponível.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Nenhum material disponível no momento.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

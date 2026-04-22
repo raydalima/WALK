@@ -1,0 +1,35 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Frequência{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">{{ course }}</h2>
+    <a class="t-btn t-btn--primary" href="{% url 'teachers:attendance_session_create' course.id %}">Nova aula</a>
+  </div>
+  <div class="t-card__body">
+    {% if sessions %}
+      <ul class="t-list">
+        {% for s in sessions %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">Aula em {{ s.date }}</div>
+              <div class="t-list__subtitle">
+                {% if s.turma %}Turma: {{ s.turma }}{% endif %}
+                {% if s.content_taught %} | Conteúdo: {{ s.content_taught|truncatewords:10 }}{% endif %}
+              </div>
+            </div>
+            <div class="t-list__actions">
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_session_detail' s.id %}">Marcar</a>
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_session_csv' s.id %}">CSV</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhuma aula registrada ainda.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

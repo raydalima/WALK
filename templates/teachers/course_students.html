@@ -1,0 +1,37 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Alunos da Disciplina{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">{{ course.nome|default:course.name|default:course }} — Alunos</h2>
+    <div class="t-list__actions">
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_attendance' course.id %}">Frequência</a>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_attendance_csv' course.id %}">Baixar CSV</a>
+    </div>
+  </div>
+  <div class="t-card__body">
+    {% if students %}
+      <ul class="t-list">
+        {% for student in students %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">
+                {{ student.user.get_full_name|default:student.user.username|default:student }}
+              </div>
+              <div class="t-list__subtitle">{{ student.user.email }}</div>
+            </div>
+            <div class="t-list__actions">
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:student_diagnostic' student.id %}">Diagnóstico</a>
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:student_feedback' student.id %}">Feedback</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhum aluno matriculado nesta disciplina.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

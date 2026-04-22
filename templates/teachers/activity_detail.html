@@ -1,0 +1,55 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Envios da Atividade{% endblock %}
+
+{% block teacher_content %}
+<div class="t-grid">
+  <div class="t-card" style="grid-column: span 2;">
+    <div class="t-card__header">
+      <div>
+        <h2 class="t-card__title">{{ activity.title }}</h2>
+        <div class="t-list__subtitle">{{ activity.turma }}{% if activity.course %} • {{ activity.course.nome }}{% endif %}</div>
+      </div>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:activity_submissions_list' %}">Voltar</a>
+    </div>
+    <div class="t-card__body">
+      <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+        <select name="status" class="form-control" style="max-width:280px;">
+          <option value="">Todos os status</option>
+          {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button class="t-btn t-btn--primary" type="submit">Filtrar</button>
+      </form>
+
+      {% if rows %}
+        <ul class="t-list">
+          {% for row in rows %}
+            <li class="t-list__item">
+              <div class="t-list__main">
+                <div class="t-list__title">{{ row.student.user.get_full_name|default:row.student.user.username }}</div>
+                <div class="t-list__subtitle">
+                  Situação: {{ row.status_label }}
+                  {% if row.result and row.result.submitted_at %} • Enviado em {{ row.result.submitted_at|date:"d/m/Y H:i" }}{% endif %}
+                </div>
+                {% if row.result and row.result.teacher_feedback %}
+                  <div class="t-list__subtitle">Feedback registrado.</div>
+                {% endif %}
+              </div>
+              <div class="t-list__actions">
+                {% if row.result and row.result.submission_url %}
+                  <a class="t-btn t-btn--ghost" href="{{ row.result.submission_url }}" target="_blank" rel="noopener noreferrer">Ver atividade</a>
+                {% endif %}
+                <a class="t-btn t-btn--primary" href="{% url 'teachers:activity_result_update' activity.id row.student.id %}">Atualizar status</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="t-empty">Nenhum aluno encontrado para o filtro selecionado.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Entrar como Professor - WALK{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card p-4">
+        <h3 class="mb-3">Entrar - Professor</h3>
+        <form method="post" action="{% url 'accounts:login' %}">{% csrf_token %}
+          <input type="hidden" name="next" value="/professor/">
+          <div class="mb-3">
+            <label for="id_username" class="form-label">E-mail ou nome de usuário</label>
+            <input type="text" name="username" id="id_username" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="id_password" class="form-label">Senha</label>
+            <input type="password" name="password" id="id_password" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Entrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

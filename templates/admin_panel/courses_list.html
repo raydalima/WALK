@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Disciplinas - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-journal-text text-primary"></i> Disciplinas</h2>
+        <a href="{% url 'admin_panel:course_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nova Disciplina
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            {% if courses %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Área</th>
+                                <th>Carga Horária</th>
+                                <th>Professores</th>
+                                <th>Matrículas Ativas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                                <tr>
+                                    <td>{{ course.nome }}</td>
+                                    <td>{{ course.area }}</td>
+                                    <td>{{ course.carga_horaria }}h</td>
+                                    <td>
+                                      {% for teacher in course.teachers.all %}
+                                        {{ teacher.user.get_full_name|default:teacher.user.username }}{% if not forloop.last %}, {% endif %}
+                                      {% empty %}
+                                        -
+                                      {% endfor %}
+                                    </td>
+                                    <td>{{ course.enrolled_students_count }}</td>
+                                    <td>
+                                        <a href="{% url 'admin_panel:course_edit' course.id %}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'admin_panel:course_delete' course.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center">Nenhuma disciplina cadastrada</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,568 @@
+{% extends 'base.html' %}
+
+{% block title %}WALK - Início{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ========== VARIÁVEIS E RESET ========== */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        --accent-color: #f39c12;
+        --accent-hover: #e67e22;
+        --text-muted: #6c757d;
+        --shadow-sm: 0 2px 10px rgba(0,0,0,0.02);
+        --shadow-md: 0 10px 25px rgba(0,0,0,0.05);
+        --shadow-lg: 0 14px 30px rgba(0,0,0,0.08);
+    }
+
+    /* Fonte global consistente para toda a página */
+    body, html, h1, h2, h3, h4, h5, h6, p, a, button, input, textarea, select,
+    .nav-link, .btn, .card, .project-info-card, .card-feature, .testimonial-card {
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+            'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Formatação específica para o texto 'Sobre o Projeto' */
+    .project-about {
+        max-width: 920px;
+        margin: 0.5rem auto 0;
+        text-align: justify;
+        line-height: 1.85;
+        font-size: 1rem;
+        color: var(--text-muted);
+        padding: 0 12px;
+    }
+
+    .project-about p {
+        margin-bottom: 0.85rem;
+    }
+
+    /* Interatividade: reveal on scroll e preview expandível */
+    .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .project-about .project-about-full {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.6s ease;
+    }
+    .project-about.expanded .project-about-full {
+        max-height: 800px; /* suficiente para o conteúdo */
+    }
+
+    .expand-btn {
+        display: inline-block;
+        margin-top: 12px;
+        cursor: pointer;
+        color: var(--primary-color, #1e3c72);
+        font-weight: 700;
+        border: none;
+        background: transparent;
+        padding: 6px 10px;
+    }
+
+    /* realçar cards ao revelar */
+    .project-info-card.reveal {
+        transform: translateY(20px) scale(0.995);
+        opacity: 0;
+    }
+    .project-info-card.reveal.visible {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    /* ========== ESTILIZAÇÃO DA NAVBAR ========== */
+    .navbar {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        padding: 15px 0;
+        transition: all 0.3s ease;
+    }
+
+    .navbar.scrolled {
+        padding: 10px 0;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+    }
+
+    .navbar-brand {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: white !important;
+        letter-spacing: -0.5px;
+        transition: transform 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+        transform: scale(1.05);
+    }
+
+    .navbar-nav .nav-link {
+        color: rgba(255,255,255,0.85) !important;
+        font-weight: 500;
+        margin: 0 10px;
+        padding: 8px 16px !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .navbar-nav .nav-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background: var(--accent-color);
+        transition: width 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: white !important;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .navbar-nav .nav-link:hover::before {
+        width: 60%;
+    }
+
+    .navbar-nav .nav-link.active {
+        background: rgba(243,156,18,0.2);
+        color: white !important;
+    }
+
+    .navbar-toggler {
+        border: 2px solid rgba(255,255,255,0.5);
+        padding: 8px 12px;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* ========== SEÇÃO CTA (HERO) ========== */
+    .cta-section {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 100px 0 80px;
+        border-radius: 0 0 50px 50px;
+        margin-bottom: 60px;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+        top: -100px;
+        right: -100px;
+    }
+
+    .cta-section::after {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 50%;
+        bottom: -50px;
+        left: -50px;
+    }
+
+    .floaty {
+        animation: float 3s ease-in-out infinite;
+        font-weight: 800;
+        letter-spacing: -1px;
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .btn-cta {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-cta:hover {
+        background-color: var(--accent-hover);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.6);
+        color: white;
+    }
+
+    /* ========== CARDS DE DESTAQUE ========== */
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--accent-color);
+        margin-bottom: 15px;
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+
+    .card-feature {
+        border: none;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        height: 100%;
+        background: white;
+        box-shadow: var(--shadow-md);
+        padding: 30px 20px;
+        animation: fadeInUp 0.6s ease both;
+    }
+
+    .card-feature:nth-child(1) { animation-delay: 0.1s; }
+    .card-feature:nth-child(2) { animation-delay: 0.2s; }
+    .card-feature:nth-child(3) { animation-delay: 0.3s; }
+
+    .card-feature:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .card-feature:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .card-feature h4 {
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #1e3c72;
+    }
+
+    /* ========== SEÇÃO SOBRE O PROJETO ========== */
+    .accent-underline {
+        position: relative;
+        display: inline-block;
+        font-weight: 700;
+        color: #1e3c72;
+    }
+
+    .accent-underline::after {
+        content: '';
+        position: absolute;
+        width: 60%;
+        height: 4px;
+        background: var(--accent-color);
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 999px;
+    }
+
+    .project-info-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 28px 24px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(0,0,0,0.03);
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        animation: fadeInUp 0.6s ease both;
+        height: 100%;
+    }
+
+    .project-info-card:nth-child(1) { animation-delay: 0.05s; }
+    .project-info-card:nth-child(2) { animation-delay: 0.15s; }
+    .project-info-card:nth-child(3) { animation-delay: 0.25s; }
+
+    .project-info-card::before {
+        content: '';
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle at center, rgba(243,156,18,0.15), transparent 70%);
+        top: -40px;
+        right: -40px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .project-info-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+        border-color: rgba(243,156,18,0.6);
+    }
+
+    .project-info-card:hover::before {
+        opacity: 1;
+    }
+
+    .project-info-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: rgba(243,156,18,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: var(--accent-color);
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .project-info-card:hover .project-info-icon {
+        background: var(--accent-color);
+        color: white;
+        transform: rotate(5deg) scale(1.05);
+    }
+
+    .project-info-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+        color: #1e3c72;
+    }
+
+    .project-info-text {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
+
+    .project-info-list {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+
+    .project-info-list li {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .project-info-list li i {
+        font-size: 1.1rem;
+    }
+
+    /* ========== ANIMAÇÕES ========== */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ========== RESPONSIVIDADE ========== */
+    @media (max-width: 767.98px) {
+        .cta-section {
+            padding: 60px 0 50px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .floaty {
+            font-size: 2rem;
+        }
+
+        .card-feature {
+            margin-bottom: 20px;
+        }
+
+        .project-info-card {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ========== SEÇÃO CTA (HERO) ========== -->
+<div class="cta-section text-center">
+    <div class="container">
+        <h1 class="display-3 floaty mb-3">WALK</h1>
+        <p class="lead mb-4" style="opacity: 0.9;">
+            Democratizando o acesso ao ensino superior com tecnologia e educação de qualidade.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="{% url 'students:pre_cadastro' %}" class="btn btn-cta btn-lg">
+                <i class="bi bi-rocket-takeoff"></i> Pré-matrícula
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SEÇÃO DE DESTAQUES ========== -->
+<div class="container mb-5">
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="card-feature">
+                <i class="bi bi-mortarboard feature-icon"></i>
+                <h4>Ensino Gratuito</h4>
+                <p class="text-muted">
+                    Foco total na inclusão social e no apoio a estudantes de baixa renda que buscam o ensino superior.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-feature">
+                <i class="bi bi-journal-check feature-icon"></i>
+                <h4>Material Completo</h4>
+                <p class="text-muted">
+                    Acesso a apostilas, listas de exercícios e simulados focados no ENEM e vestibulares.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-feature">
+                <i class="bi bi-person-video3 feature-icon"></i>
+                <h4>Aulas Online</h4>
+                <p class="text-muted">
+                    Plataforma intuitiva para assistir aulas gravadas e ao vivo de qualquer lugar.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SEÇÃO SOBRE O PROJETO ========== -->
+<div class="container my-5 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 text-center mb-5">
+            <h3 class="accent-underline" id="sobre-projeto">Sobre o Projeto</h3>
+            <div class="project-about reveal">
+                <p>
+                    O WALK surgiu da necessidade estratégica de integrar o conhecimento técnico-acadêmico às demandas sociais da comunidade local. O projeto foi concebido para atuar como uma ferramenta de transformação, preparando jovens para os desafios dos vestibulares nacionais por meio de uma plataforma de gestão acessível, intuitiva e eficiente, voltada especificamente para a realidade dos cursinhos populares.
+                </p>
+                <div class="project-about-full">
+                    <p>
+                        O sistema foi desenvolvido pelas acadêmicas do curso de Engenharia de Software da Universidade do Estado do Pará (UEPA): Rayda Lima, Patrícia Lopes e Daniela Marçal. O desenvolvimento ocorreu sob a orientação do Professor Mestre Wilker José Caminha dos Santos, unindo o rigor metodológico da engenharia à responsabilidade social de democratizar o acesso ao ensino superior através da tecnologia.
+                    </p>
+                </div>
+                <button class="expand-btn" aria-expanded="false">Leia mais</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Card 1: Nosso Objetivo -->
+        <div class="col-md-4">
+            <div class="project-info-card reveal">
+                <div class="project-info-icon">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+                <h5 class="project-info-title">Nosso Objetivo</h5>
+                <p class="project-info-text">
+                    Democratizar o acesso ao estudo preparatório, oferecendo um ambiente virtual que apoia o
+                    aprendizado contínuo, focado no ENEM e vestibulares, com olhar especial para estudantes de escolas públicas.
+                </p>
+            </div>
+        </div>
+
+        <!-- Card 2: O que oferecemos -->
+        <div class="col-md-4">
+            <div class="project-info-card reveal">
+                <div class="project-info-icon">
+                    <i class="bi bi-stars"></i>
+                </div>
+                <h5 class="project-info-title">O que oferecemos</h5>
+                <ul class="project-info-list">
+                    <li><i class="bi bi-check2-circle text-success"></i> Aulas gravadas e ao vivo</li>
+                    <li><i class="bi bi-check2-circle text-success"></i> Materiais de estudo e exercícios</li>
+                    <li><i class="bi bi-check2-circle text-success"></i> Simulados por área do conhecimento</li>
+                    <li><i class="bi bi-check2-circle text-success"></i> Acompanhamento de desempenho</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card 3: Pré-matrícula -->
+        <div class="col-md-4">
+            <div class="project-info-card reveal">
+                <div class="project-info-icon">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <h5 class="project-info-title">Pré-matrícula</h5>
+                <p class="project-info-text">
+                    Garanta sua intenção de vaga preenchendo a pré-matrícula. Nossa equipe administrativa
+                    entrará em contato para validar sua inscrição assim que novas turmas forem abertas.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'includes/project_info_modal.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ========== NAVBAR SCROLL EFFECT ==========
+    const navbar = document.querySelector('.navbar');
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Reveal on scroll and expand toggle
+    (function(){
+  // IntersectionObserver para revelar elementos
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.18});
+
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // Toggle 'Leia mais'
+  var btn = document.querySelector('.project-about .expand-btn');
+  if(btn){
+    btn.addEventListener('click', function(){
+      var wrap = document.querySelector('.project-about');
+      var expanded = wrap.classList.toggle('expanded');
+      btn.setAttribute('aria-expanded', expanded);
+      btn.textContent = expanded ? 'Leia menos' : 'Leia mais';
+      // smooth scroll to keep context when expanding
+      if(expanded){
+        wrap.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}

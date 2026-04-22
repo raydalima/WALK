@@ -1,0 +1,50 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Frequência{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">Selecione uma disciplina</h2>
+  </div>
+  <div class="t-card__body">
+    {% if courses %}
+      <ul class="t-list">
+        {% for c in courses %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">{{ c }}</div>
+            </div>
+            <div class="t-list__actions">
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_course' c.id %}">Abrir</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhuma disciplina encontrada.</div>
+    {% endif %}
+  </div>
+</div>
+<div class="t-card" style="margin-top:16px;">
+  <div class="t-card__header">
+    <h2 class="t-card__title">Turmas Vinculadas</h2>
+  </div>
+  <div class="t-card__body">
+    {% if turmas %}
+      <ul class="t-list">
+        {% for turma in turmas %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">{{ turma.nome }} ({{ turma.ano }})</div>
+              <div class="t-list__subtitle">{{ turma.get_turno_display }}</div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhuma turma vinculada.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

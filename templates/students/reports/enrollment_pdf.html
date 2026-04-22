@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de alunos - {{ course.nome }}</title>
+    <style>
+        body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f0f0f0; }
+        h1 { font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Lista de alunos - {{ course.nome }}</h1>
+    <p>Área: {{ course.area }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Nome de usuário</th>
+                <th>E-mail</th>
+                <th>Matrícula</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in enrollments %}
+                {% with u=e.student.user %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ u.get_full_name }}</td>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ e.enrollment_number }}</td>
+                </tr>
+                {% endwith %}
+            {% empty %}
+                <tr><td colspan="5">Nenhum aluno matriculado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

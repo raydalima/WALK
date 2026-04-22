@@ -1,0 +1,15 @@
+[Unit]
+Description=Gunicorn service for WALK
+After=network.target
+
+[Service]
+User=walk
+Group=www-data
+WorkingDirectory=/var/www/walk
+EnvironmentFile=/var/www/walk/.env
+RuntimeDirectory=walk
+RuntimeDirectoryMode=0755
+ExecStart=/var/www/walk/venv/bin/gunicorn --workers 3 --bind unix:/run/walk/gunicorn.sock --access-logfile - --error-logfile - walk.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

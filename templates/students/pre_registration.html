@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Pré-matrícula - WALK{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card p-4">
+        <h2>Pré-matrícula - WALK</h2>
+        <p class="text-muted">Preencha o formulário abaixo para manifestar interesse na próxima turma.</p>
+
+        <form method="post" action="" novalidate>
+          {% csrf_token %}
+
+          <h5 class="mt-4">1. Dados Pessoais</h5>
+          <div class="row g-3">
+            <div class="col-md-12">
+              {{ pre_registration_form.first_name.label_tag }}
+              {{ pre_registration_form.first_name }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.gender.label_tag }}
+              {{ pre_registration_form.gender }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.birth_date.label_tag }}
+              {{ pre_registration_form.birth_date }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.cpf.label_tag }}
+              {{ pre_registration_form.cpf }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.rg.label_tag }}
+              {{ pre_registration_form.rg }}
+            </div>
+            <div class="col-12">
+              {{ pre_registration_form.address.label_tag }}
+              {{ pre_registration_form.address }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.city.label_tag }}
+              {{ pre_registration_form.city }}
+            </div>
+            <div class="col-md-3">
+              {{ pre_registration_form.state.label_tag }}
+              {{ pre_registration_form.state }}
+            </div>
+            <div class="col-md-3">
+              {{ pre_registration_form.zip_code.label_tag }}
+              {{ pre_registration_form.zip_code }}
+            </div>
+
+            <div class="col-md-6">
+              {{ pre_registration_form.phone.label_tag }}
+              {{ pre_registration_form.phone }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.email.label_tag }}
+              {{ pre_registration_form.email }}
+            </div>
+
+            <div class="col-md-6">
+              {{ pre_registration_form.responsible_name.label_tag }}
+              {{ pre_registration_form.responsible_name }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.responsible_phone.label_tag }}
+              {{ pre_registration_form.responsible_phone }}
+            </div>
+
+            <div class="col-md-6">
+              {{ pre_registration_form.racial_self_declaration.label_tag }}
+              {{ pre_registration_form.racial_self_declaration }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.social_name.label_tag }}
+              {{ pre_registration_form.social_name }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.pronouns.label_tag }}
+              {{ pre_registration_form.pronouns }}
+            </div>
+          </div>
+
+          <h5 class="mt-4">2. Perfil Escolar</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ pre_registration_form.school_status.label_tag }}
+              {{ pre_registration_form.school_status }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.school_type.label_tag }}
+              {{ pre_registration_form.school_type }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.graduation_year.label_tag }}
+              {{ pre_registration_form.graduation_year }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.previous_vesting.label_tag }}
+              {{ pre_registration_form.previous_vesting }}
+            </div>
+            <div class="col-12">
+              {{ pre_registration_form.intended_course.label_tag }}
+              {{ pre_registration_form.intended_course }}
+            </div>
+          </div>
+
+          <h5 class="mt-4">3. Perfil Socioeconômico</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              {{ pre_registration_form.family_income.label_tag }}
+              {{ pre_registration_form.family_income }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.household_members.label_tag }}
+              {{ pre_registration_form.household_members }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.has_internet.label_tag }}
+              {{ pre_registration_form.has_internet }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.has_device.label_tag }}
+              {{ pre_registration_form.has_device }}
+            </div>
+            <div class="col-md-6">
+              {{ pre_registration_form.works_currently.label_tag }}
+              {{ pre_registration_form.works_currently }}
+            </div>
+          </div>
+
+          <h5 class="mt-4">4. Divulgação e Motivação</h5>
+          <div class="row g-3">
+            <div class="col-12">
+              {{ pre_registration_form.how_did_you_hear.label_tag }}
+              {{ pre_registration_form.how_did_you_hear }}
+            </div>
+            <div class="col-12">
+              {{ pre_registration_form.why_join.label_tag }}
+              {{ pre_registration_form.why_join }}
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex justify-content-between align-items-center">
+            <div>
+              {{ pre_registration_form.consent }} {{ pre_registration_form.consent.label_tag }}
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">Enviar Pré-Matrícula</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% block extra_js %}
+<script>
+  const backToTopButton = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      backToTopButton.style.display = 'flex';
+    } else {
+      backToTopButton.style.display = 'none';
+    }
+  });
+  backToTopButton.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+{% endblock %}
+{% endblock %}

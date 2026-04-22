@@ -1,0 +1,277 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Nova pergunta{% endblock %}
+
+{% block teacher_content %}
+<style>
+  .question-builder {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+    gap: 18px;
+  }
+  .question-builder__card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 14px 34px rgba(17, 45, 78, 0.08);
+    overflow: hidden;
+  }
+  .question-builder__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(17, 45, 78, 0.08);
+  }
+  .question-builder__title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .question-builder__subtitle {
+    margin: 6px 0 0;
+    color: #5d6d82;
+  }
+  .question-builder__body {
+    padding: 24px;
+  }
+  .question-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .question-field--full {
+    grid-column: 1 / -1;
+  }
+  .question-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #17324d;
+  }
+  .question-help {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 0.92rem;
+  }
+  .question-field .errorlist,
+  .question-builder__errors {
+    color: #c62828;
+    font-size: 0.92rem;
+    margin: 8px 0 0;
+    padding-left: 18px;
+  }
+  .question-builder__errors {
+    margin-bottom: 18px;
+  }
+  .question-choice-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .question-choice-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    background: #f8fbff;
+    border: 1px solid rgba(17, 45, 78, 0.08);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .question-choice-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #21456f;
+  }
+  .question-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .question-aside__list {
+    display: grid;
+    gap: 12px;
+  }
+  .question-aside__item {
+    background: #f7f9fc;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .question-aside__label {
+    color: #607086;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .question-aside__value {
+    color: #143351;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .question-tip-list {
+    margin: 0;
+    padding-left: 18px;
+    color: #43556d;
+  }
+  .question-tip-list li + li {
+    margin-top: 8px;
+  }
+  @media (max-width: 900px) {
+    .question-builder {
+      grid-template-columns: 1fr;
+    }
+    .question-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="question-builder">
+  <section class="question-builder__card">
+    <div class="question-builder__header">
+      <h2 class="question-builder__title">Adicionar pergunta ao questionário</h2>
+      <p class="question-builder__subtitle">
+        Questionário: <strong>{{ quiz.title }}</strong>
+      </p>
+    </div>
+
+    <div class="question-builder__body">
+      {% if q_form.non_field_errors %}
+        <ul class="question-builder__errors">
+          {% for error in q_form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+        {{ c_formset.management_form }}
+
+        <div class="question-grid">
+          <div class="question-field question-field--full">
+            <label for="{{ q_form.text.id_for_label }}">{{ q_form.text.label }}</label>
+            {{ q_form.text }}
+            <div class="question-help">Escreva o enunciado completo da questão.</div>
+            {{ q_form.text.errors }}
+          </div>
+
+          <div class="question-field">
+            <label for="{{ q_form.type.id_for_label }}">{{ q_form.type.label }}</label>
+            {{ q_form.type }}
+            <div class="question-help">Escolha o formato da pergunta antes de preencher o gabarito.</div>
+            {{ q_form.type.errors }}
+          </div>
+
+          <div class="question-field">
+            <label for="{{ q_form.order.id_for_label }}">{{ q_form.order.label }}</label>
+            {{ q_form.order }}
+            <div class="question-help">Define a posição da pergunta dentro do questionário.</div>
+            {{ q_form.order.errors }}
+          </div>
+
+          <div class="question-field">
+            <label for="{{ q_form.points.id_for_label }}">{{ q_form.points.label }}</label>
+            {{ q_form.points }}
+            <div class="question-help">Quantidade de pontos atribuída a esta questão.</div>
+            {{ q_form.points.errors }}
+          </div>
+
+          <div class="question-field question-field--full js-text-answer-block">
+            <label for="{{ q_form.correct_text.id_for_label }}">{{ q_form.correct_text.label }}</label>
+            {{ q_form.correct_text }}
+            <div class="question-help">Use esse campo para deixar uma resposta de referência em questões abertas.</div>
+            {{ q_form.correct_text.errors }}
+          </div>
+
+          <div class="question-field question-field--full js-choice-block">
+            <label>Alternativas</label>
+            <div class="question-help">
+              Para múltipla escolha e verdadeiro/falso, preencha as opções abaixo e marque a correta.
+            </div>
+
+            <div class="question-choice-list">
+              {% for f in c_formset %}
+                <div class="question-choice-item">
+                  <div>
+                    {{ f.text }}
+                    {{ f.text.errors }}
+                  </div>
+                  <label class="question-choice-check">
+                    {{ f.is_correct }} Correta
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="question-actions">
+          <button class="t-btn t-btn--primary" type="submit">Salvar pergunta</button>
+          <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:quiz_detail' quiz.id %}">Voltar ao questionário</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <aside class="question-builder__card">
+    <div class="question-builder__header">
+      <h2 class="question-builder__title">Guia rápido</h2>
+      <p class="question-builder__subtitle">Ajuda para montar perguntas com menos erro.</p>
+    </div>
+
+    <div class="question-builder__body">
+      <div class="question-aside__list">
+        <div class="question-aside__item">
+          <div class="question-aside__label">Questionário</div>
+          <div class="question-aside__value">{{ quiz.title }}</div>
+        </div>
+        <div class="question-aside__item">
+          <div class="question-aside__label">Disciplina</div>
+          <div class="question-aside__value">{{ quiz.course.nome|default:quiz.course }}</div>
+        </div>
+        <div class="question-aside__item">
+          <div class="question-aside__label">Perguntas atuais</div>
+          <div class="question-aside__value">{{ quiz.questions.count }}</div>
+        </div>
+      </div>
+
+      <ul class="question-tip-list" style="margin-top: 18px;">
+        <li>Use <strong>múltipla escolha</strong> para correção automática com alternativas.</li>
+        <li>Use <strong>verdadeiro/falso</strong> com duas opções curtas e apenas uma marcada como correta.</li>
+        <li>Use <strong>resposta curta</strong> ou <strong>discursiva</strong> quando quiser avaliação mais aberta.</li>
+        <li>Mantenha a ordem sequencial para facilitar a leitura do simulado pelo aluno.</li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const typeField = document.getElementById('{{ q_form.type.id_for_label }}');
+    const choiceBlock = document.querySelector('.js-choice-block');
+    const textAnswerBlock = document.querySelector('.js-text-answer-block');
+
+    function syncBlocks() {
+      if (!typeField) return;
+      const currentType = typeField.value;
+      const usesChoices = currentType === 'MCQ' || currentType === 'TF';
+      const usesTextAnswer = currentType === 'ST' || currentType === 'ES';
+
+      if (choiceBlock) {
+        choiceBlock.style.display = usesChoices ? 'block' : 'none';
+      }
+      if (textAnswerBlock) {
+        textAnswerBlock.style.display = usesTextAnswer ? 'block' : 'none';
+      }
+    }
+
+    if (typeField) {
+      typeField.addEventListener('change', syncBlocks);
+      syncBlocks();
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,330 @@
+{% extends 'teachers/base.html' %}
+
+{% block title %}Painel do Professor - WALK{% endblock %}
+{% block page_title %}Painel do Professor{% endblock %}
+
+{% block teacher_content %}
+<style>
+  .teacher-dashboard {
+    display: grid;
+    gap: 18px;
+  }
+  .teacher-dashboard__hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 30px;
+    color: #fff;
+    background:
+      radial-gradient(circle at top right, rgba(56, 189, 248, 0.45), transparent 34%),
+      linear-gradient(135deg, #0f2f57 0%, #145a6f 48%, #0b8a75 100%);
+    box-shadow: 0 24px 55px rgba(15, 47, 87, 0.2);
+  }
+  .teacher-dashboard__hero::after {
+    content: "";
+    position: absolute;
+    right: -80px;
+    bottom: -120px;
+    width: 300px;
+    height: 300px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .teacher-dashboard__hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .teacher-dashboard__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    font-weight: 800;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .teacher-dashboard__title {
+    margin: 14px 0 8px;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    font-weight: 900;
+    line-height: 1.04;
+  }
+  .teacher-dashboard__subtitle {
+    margin: 0;
+    max-width: 680px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1.02rem;
+  }
+  .teacher-dashboard__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .teacher-dashboard__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 800;
+  }
+  .teacher-dashboard__btn--light {
+    background: #fff;
+    color: #0f2f57;
+  }
+  .teacher-dashboard__btn--glass {
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .teacher-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .teacher-metric {
+    position: relative;
+    overflow: hidden;
+    padding: 18px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid rgba(15, 47, 87, 0.08);
+    box-shadow: 0 15px 36px rgba(15, 47, 87, 0.08);
+  }
+  .teacher-metric::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: linear-gradient(180deg, #0b8a75, #2563eb);
+  }
+  .teacher-metric__label {
+    color: #607086;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 800;
+  }
+  .teacher-metric__value {
+    margin-top: 6px;
+    color: #143351;
+    font-size: 2rem;
+    font-weight: 900;
+  }
+  .teacher-dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+    gap: 18px;
+  }
+  .teacher-panel {
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(15, 47, 87, 0.08);
+    box-shadow: 0 18px 42px rgba(15, 47, 87, 0.08);
+    overflow: hidden;
+  }
+  .teacher-panel__header {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(15, 47, 87, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .teacher-panel__title {
+    margin: 0;
+    color: #143351;
+    font-size: 1.08rem;
+    font-weight: 900;
+  }
+  .teacher-panel__body {
+    padding: 18px 20px 20px;
+  }
+  .teacher-course-list {
+    display: grid;
+    gap: 12px;
+  }
+  .teacher-course-card {
+    display: grid;
+    gap: 12px;
+    padding: 15px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f8fbff, #f4fffb);
+    border: 1px solid rgba(15, 47, 87, 0.08);
+  }
+  .teacher-course-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .teacher-course-card__name {
+    color: #143351;
+    font-weight: 900;
+  }
+  .teacher-course-card__area {
+    margin-top: 3px;
+    color: #607086;
+    font-size: 0.92rem;
+  }
+  .teacher-course-card__actions,
+  .teacher-quick-actions {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+  .teacher-chip {
+    border-radius: 999px;
+    padding: 7px 10px;
+    background: #eef7ff;
+    color: #145a6f;
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+  .teacher-feed {
+    display: grid;
+    gap: 10px;
+  }
+  .teacher-feed__item {
+    padding: 12px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid rgba(15, 47, 87, 0.06);
+  }
+  .teacher-feed__title {
+    color: #143351;
+    font-weight: 850;
+  }
+  .teacher-feed__meta {
+    margin-top: 3px;
+    color: #607086;
+    font-size: 0.9rem;
+  }
+  @media (max-width: 1050px) {
+    .teacher-metrics,
+    .teacher-dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="teacher-dashboard">
+  <section class="teacher-dashboard__hero">
+    <div class="teacher-dashboard__hero-content">
+      <div>
+        <div class="teacher-dashboard__eyebrow">Professor voluntário</div>
+        <h2 class="teacher-dashboard__title">
+          Olá, {{ teacher.user.get_full_name|default:teacher.user.username|default:request.user.username }}
+        </h2>
+        <p class="teacher-dashboard__subtitle">
+          Um painel mais direto para publicar conteúdos, registrar frequência, corrigir redações e acompanhar atividades dos alunos.
+        </p>
+      </div>
+      <div class="teacher-dashboard__actions">
+        <a class="teacher-dashboard__btn teacher-dashboard__btn--light" href="{% url 'teachers:my_courses' %}">Minhas disciplinas</a>
+        <a class="teacher-dashboard__btn teacher-dashboard__btn--glass" href="{% url 'teachers:activity_submissions_list' %}">Atividades e envios</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="teacher-metrics">
+    <div class="teacher-metric">
+      <div class="teacher-metric__label">Disciplinas</div>
+      <div class="teacher-metric__value">{{ courses_count|default:0 }}</div>
+    </div>
+    <div class="teacher-metric">
+      <div class="teacher-metric__label">Materiais</div>
+      <div class="teacher-metric__value">{{ recent_materials_count|default:0 }}</div>
+    </div>
+    <div class="teacher-metric">
+      <div class="teacher-metric__label">Redações pendentes</div>
+      <div class="teacher-metric__value">{{ pending_essays_count|default:0 }}</div>
+    </div>
+    <div class="teacher-metric">
+      <div class="teacher-metric__label">Atividades a revisar</div>
+      <div class="teacher-metric__value">{{ pending_activity_results_count|default:0 }}</div>
+    </div>
+  </section>
+
+  <section class="teacher-panel">
+    <div class="teacher-panel__header">
+      <h3 class="teacher-panel__title">Acesso rápido</h3>
+    </div>
+    <div class="teacher-panel__body teacher-quick-actions">
+      <a class="t-btn t-btn--primary" href="{% url 'teachers:materials_list' %}">Conteúdos</a>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:attendance_home' %}">Frequência</a>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:corrections_home' %}">Corrigir redações</a>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:quiz_list' %}">Questionários</a>
+    </div>
+  </section>
+
+  <section class="teacher-dashboard-grid">
+    <div class="teacher-panel">
+      <div class="teacher-panel__header">
+        <h3 class="teacher-panel__title">Minhas disciplinas</h3>
+        <a class="t-link" href="{% url 'teachers:my_courses' %}">Ver todas</a>
+      </div>
+      <div class="teacher-panel__body">
+        {% if courses %}
+          <div class="teacher-course-list">
+            {% for course in courses %}
+              <article class="teacher-course-card">
+                <div class="teacher-course-card__top">
+                  <div>
+                    <div class="teacher-course-card__name">{{ course.nome|default:course.name|default:course }}</div>
+                    <div class="teacher-course-card__area">{{ course.area|default:"Área não informada" }}</div>
+                  </div>
+                  <span class="teacher-chip">{{ course.enrolled_students_count|default:0 }} aluno{{ course.enrolled_students_count|default:0|pluralize }}</span>
+                </div>
+                <div class="teacher-course-card__actions">
+                  <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_materials' course.id %}">Materiais</a>
+                  <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_videos' course.id %}">Vídeos</a>
+                  <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_students' course.id %}">Alunos</a>
+                  <a class="t-btn t-btn--primary" href="{% url 'teachers:course_attendance' course.id %}">Frequência</a>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="t-empty">Você ainda não possui disciplinas vinculadas ao seu perfil.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="teacher-panel">
+      <div class="teacher-panel__header">
+        <h3 class="teacher-panel__title">Publicações recentes</h3>
+      </div>
+      <div class="teacher-panel__body">
+        <div class="teacher-feed">
+          {% for material in recent_materials %}
+            <div class="teacher-feed__item">
+              <div class="teacher-feed__title">{{ material.title|default:material }}</div>
+              <div class="teacher-feed__meta">{{ material.course.nome|default:material.course }} • Material</div>
+            </div>
+          {% endfor %}
+          {% for video in recent_videos %}
+            <div class="teacher-feed__item">
+              <div class="teacher-feed__title">{{ video.title|default:video }}</div>
+              <div class="teacher-feed__meta">{{ video.course.nome|default:video.course }} • Aula em vídeo</div>
+            </div>
+          {% endfor %}
+          {% if not recent_materials and not recent_videos %}
+            <div class="t-empty">Nenhum conteúdo publicado recentemente.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

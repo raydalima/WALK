@@ -1,0 +1,36 @@
+<div class="modal fade" id="preRegistrationModal" tabindex="-1" aria-labelledby="preRegistrationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="preRegistrationModalLabel">Pré-Matrícula</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post" action="{% url 'students:pre_registration' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          {{ pre_registration_form.non_field_errors }}
+          <div class="mb-3">
+            <label for="id_first_name" class="form-label">Nome</label>
+            {{ pre_registration_form.first_name }}
+          </div>
+          <div class="mb-3">
+            <label for="id_last_name" class="form-label">Sobrenome</label>
+            {{ pre_registration_form.last_name }}
+          </div>
+          <div class="mb-3">
+            <label for="id_email" class="form-label">E-mail</label>
+            {{ pre_registration_form.email }}
+          </div>
+          <div class="mb-3">
+            <label for="id_phone" class="form-label">Telefone</label>
+            {{ pre_registration_form.phone }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Enviar Pré-Matrícula</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

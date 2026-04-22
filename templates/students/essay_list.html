@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Minhas Redações{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="bi bi-pencil-square text-primary"></i> Minhas Redações</h2>
+    <a href="{% url 'students:essay_submit' %}" class="btn btn-primary">Enviar nova redação</a>
+  </div>
+
+  {% if essays %}
+    <div class="row">
+      {% for essay in essays %}
+        <div class="col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ essay.title }}</h5>
+              <p class="card-text text-muted">{{ essay.course.nome }} • {{ essay.get_status_display }}</p>
+              <p class="card-text"><small class="text-muted">Enviada em {{ essay.submitted_at|date:"d/m/Y H:i" }}</small></p>
+              {% if essay.submission_url %}
+                <p>
+                  <a class="btn btn-sm btn-outline-primary" href="{{ essay.submission_url }}" target="_blank" rel="noopener noreferrer">
+                    Abrir redação enviada
+                  </a>
+                </p>
+              {% endif %}
+              {% if essay.score %}
+                <p class="card-text"><strong>Nota:</strong> {{ essay.score }}</p>
+              {% endif %}
+              {% if essay.teacher_feedback %}
+                <div class="alert alert-light border mb-0">
+                  <strong>Feedback:</strong><br>
+                  {{ essay.teacher_feedback|linebreaksbr }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">Você ainda não enviou nenhuma redação.</div>
+  {% endif %}
+</div>
+{% endblock %}

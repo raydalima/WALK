@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Nova Matrícula - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Nova Matrícula</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.student.id_for_label }}">{{ form.student.label }}</label>
+          {{ form.student }}
+          {% if form.student.errors %}<div class="text-danger">{{ form.student.errors.0 }}</div>{% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="{{ form.course.id_for_label }}">{{ form.course.label }}</label>
+          {{ form.course }}
+          {% if form.course.errors %}<div class="text-danger">{{ form.course.errors.0 }}</div>{% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a class="btn btn-secondary" href="{% url 'admin_panel:enrollments_list' %}">Voltar</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

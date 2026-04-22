@@ -1,0 +1,38 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Questionários{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">Meus questionários</h2>
+    <a class="t-btn t-btn--primary" href="{% url 'teachers:assessments_teacher:quiz_create' %}">Novo</a>
+  </div>
+  <div class="t-card__body">
+    {% if quizzes %}
+      <ul class="t-list">
+        {% for quiz in quizzes %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">{{ quiz.title }}</div>
+              <div class="t-list__subtitle">
+                {{ quiz.course.nome|default:quiz.course.name|default:quiz.course }}
+              </div>
+            </div>
+            <div class="t-list__actions">
+              {% if quiz.is_published %}
+                <span class="t-badge">Publicado</span>
+              {% else %}
+                <span class="t-badge">Rascunho</span>
+              {% endif %}
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:quiz_detail' quiz.id %}">Abrir</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Você ainda não criou questionários.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

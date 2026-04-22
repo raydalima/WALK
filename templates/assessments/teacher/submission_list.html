@@ -1,0 +1,36 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Envios{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">Envios — {{ quiz.title }}</h2>
+    <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:quiz_detail' quiz.id %}">Voltar</a>
+  </div>
+  <div class="t-card__body">
+    {% if submissions %}
+      <ul class="t-list">
+        {% for s in submissions %}
+          <li class="t-list__item">
+            <div class="t-list__main">
+              <div class="t-list__title">
+                {{ s.student.user.get_full_name|default:s.student.user.username }} — Tentativa {{ s.attempt }}
+              </div>
+              <div class="t-list__subtitle">
+                Situação: {{ s.get_status_display }}
+                {% if s.submitted_at %} • Enviado em {{ s.submitted_at|date:"d/m/Y H:i" }}{% endif %}
+              </div>
+            </div>
+            <div class="t-list__actions">
+              <a class="t-btn t-btn--ghost" href="{% url 'teachers:assessments_teacher:grade_submission' s.id %}">Ver / editar</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhum envio ainda.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

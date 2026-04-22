@@ -1,0 +1,46 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Corrigir redação{% endblock %}
+
+{% block teacher_content %}
+<div class="t-grid">
+  <div class="t-card" style="grid-column: span 2;">
+    <div class="t-card__header">
+      <h2 class="t-card__title">{{ essay.title }}</h2>
+      <a class="t-btn t-btn--ghost" href="{% url 'teachers:corrections_home' %}">Voltar</a>
+    </div>
+    <div class="t-card__body">
+      <p><strong>Aluno:</strong> {{ essay.student.user.get_full_name|default:essay.student.user.username }}</p>
+      <p><strong>Disciplina:</strong> {{ essay.course.nome }}</p>
+      <p><strong>Situação:</strong> {{ essay.get_status_display }}</p>
+      <p><strong>Enviada em:</strong> {{ essay.submitted_at|date:"d/m/Y H:i" }}</p>
+      {% if essay.prompt %}
+        <p><strong>Tema:</strong> {{ essay.prompt }}</p>
+      {% endif %}
+      {% if essay.submission_url %}
+        <p style="margin-top: 12px;">
+          <a class="t-btn t-btn--primary" href="{{ essay.submission_url }}" target="_blank" rel="noopener noreferrer">Ver redação</a>
+        </p>
+        <p class="t-list__subtitle">Confirme se o documento abriu com permissão de visualização antes de concluir a correção.</p>
+      {% elif essay.essay_text %}
+        <div class="t-empty" style="white-space: pre-wrap; text-align: left;">{{ essay.essay_text }}</div>
+      {% else %}
+        <div class="t-empty">Nenhum link externo foi informado nesta redação.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="t-card" style="grid-column: span 2;">
+    <div class="t-card__header">
+      <h2 class="t-card__title">Lançar correção</h2>
+    </div>
+    <div class="t-card__body">
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="t-btn t-btn--primary" type="submit">Salvar correção</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

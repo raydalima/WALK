@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Matrículas - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-card-checklist text-primary"></i> Matrículas</h2>
+        <a href="{% url 'admin_panel:enrollment_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nova Matrícula
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            {% if enrollments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Disciplina</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in enrollments %}
+                                <tr>
+                                    <td>{{ enrollment.student.user.get_full_name }}</td>
+                                    <td>{{ enrollment.course.nome }}</td>
+                                    <td>{{ enrollment.enrollment_date|date:"d/m/Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'admin_panel:enrollment_delete' enrollment.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?');">
+                                            <i class="bi bi-trash"></i> Cancelar
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center">Nenhuma matrícula cadastrada</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

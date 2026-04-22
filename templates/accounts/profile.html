@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu Perfil - WALK{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h1>Meu Perfil</h1>
+  <p>Nome: {{ user.get_full_name|default:user.username }}</p>
+  <p>E-mail: {{ user.email }}</p>
+</div>
+{% endblock %}

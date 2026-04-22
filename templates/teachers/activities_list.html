@@ -1,0 +1,60 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Atividades e Envios{% endblock %}
+
+{% block teacher_content %}
+<div class="t-grid">
+  <div class="t-card t-card--hero">
+    <div class="t-card__body">
+      <div class="t-hero">
+        <div>
+          <div class="t-hero__kicker">Acompanhamento</div>
+          <div class="t-hero__title">Atividades escritas</div>
+          <div class="t-hero__subtitle">Veja quem enviou, abra os links externos e acompanhe as correções por turma.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="t-card" style="grid-column: span 2;">
+    <div class="t-card__header">
+      <h2 class="t-card__title">Atividades</h2>
+    </div>
+    <div class="t-card__body">
+      <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+        <select name="status" class="form-control" style="max-width:280px;">
+          <option value="">Todos os status</option>
+          {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button class="t-btn t-btn--primary" type="submit">Filtrar</button>
+      </form>
+
+      {% if activity_rows %}
+        <ul class="t-list">
+          {% for row in activity_rows %}
+            <li class="t-list__item">
+              <div class="t-list__main">
+                <div class="t-list__title">{{ row.activity.title }}</div>
+                <div class="t-list__subtitle">
+                  {{ row.activity.turma }}
+                  {% if row.activity.course %} • {{ row.activity.course.nome }}{% endif %}
+                </div>
+                <div class="t-list__subtitle">
+                  {{ row.submitted_count }} enviados • {{ row.corrected_count }} corrigidos • {{ row.pending_count }} pendentes/não entregues
+                </div>
+              </div>
+              <div class="t-list__actions">
+                <a class="t-btn t-btn--ghost" href="{% url 'teachers:activity_submissions_detail' row.activity.id %}">Ver envios</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="t-empty">Nenhuma atividade vinculada às suas turmas ou disciplinas.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

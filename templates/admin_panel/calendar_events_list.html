@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendário institucional{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="mb-0"><i class="bi bi-calendar-event text-primary"></i> Calendário institucional</h2>
+      <p class="text-muted mb-0">Eventos, simulados, revisões, reuniões e datas importantes.</p>
+    </div>
+    <a href="{% url 'admin_panel:calendar_event_create' %}" class="btn btn-primary">Novo evento</a>
+  </div>
+
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Evento</th>
+            <th>Tipo</th>
+            <th>Público</th>
+            <th>Local</th>
+            <th>Situação</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+            <tr>
+              <td>{{ event.starts_at|date:"d/m/Y H:i" }}</td>
+              <td>
+                <strong>{{ event.title }}</strong>
+                {% if event.is_featured %}<span class="badge bg-warning text-dark ms-1">Destaque</span>{% endif %}
+              </td>
+              <td>{{ event.get_event_type_display }}</td>
+              <td>{{ event.get_audience_display }}{% if event.turma %} · {{ event.turma }}{% endif %}</td>
+              <td>{{ event.location|default:"A definir" }}</td>
+              <td>
+                {% if event.is_visible %}
+                  <span class="badge bg-success">Visível</span>
+                {% else %}
+                  <span class="badge bg-secondary">Oculto</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                <a href="{% url 'admin_panel:calendar_event_edit' event.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="{% url 'admin_panel:calendar_event_delete' event.id %}" class="btn btn-sm btn-outline-danger">Remover</a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-4">Nenhum evento cadastrado.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

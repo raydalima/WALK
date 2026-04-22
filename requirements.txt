@@ -1,0 +1,18 @@
+# Django Framework
+Django==5.2.12
+
+# Database
+psycopg2-binary==2.9.11
+
+# Image processing
+Pillow==12.1.0
+reportlab==4.4.10
+
+# Environment variables
+python-decouple==3.8
+
+# Production server
+gunicorn==23.0.0
+
+# Whitenoise for static files in production
+whitenoise==6.6.0

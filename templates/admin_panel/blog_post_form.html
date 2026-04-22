@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}{% if post %}Editar{% else %}Nova{% endif %} Publicação - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-newspaper text-primary"></i> 
+        {% if post %}Editar{% else %}Nova{% endif %} publicação
+    </h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Salvar</button>
+                    <a href="{% url 'admin_panel:blog_posts_list' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

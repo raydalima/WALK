@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Alunos - WALK{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-people text-primary"></i> Alunos</h2>
+        <a href="{% url 'admin_panel:student_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Novo Aluno
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="get" class="mb-3">
+                <div class="row g-2">
+                    <div class="col-md-5">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar aluno..." value="{{ search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="status" class="form-control">
+                            <option value="">Todos os status</option>
+                            {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="active" class="form-control">
+                            <option value="">Ativos/Inativos</option>
+                            <option value="ativos" {% if active_filter == 'ativos' %}selected{% endif %}>Ativos</option>
+                            <option value="inativos" {% if active_filter == 'inativos' %}selected{% endif %}>Inativos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="academic_filter" class="form-control">
+                            <option value="">Filtro acadêmico</option>
+                            <option value="activity_done" {% if academic_filter == 'activity_done' %}selected{% endif %}>Fizeram atividade</option>
+                            <option value="activity_pending" {% if academic_filter == 'activity_pending' %}selected{% endif %}>Não fizeram atividade</option>
+                            <option value="did_not_attend" {% if academic_filter == 'did_not_attend' %}selected{% endif %}>Não compareceram</option>
+                            <option value="low_frequency" {% if academic_filter == 'low_frequency' %}selected{% endif %}>Baixa frequência</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 d-grid d-md-flex justify-content-md-end">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Buscar</button>
+                    </div>
+                </div>
+            </form>
+            
+            {% if students %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Matrícula</th>
+                                <th>CPF</th>
+                                <th>Situação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                                <tr>
+                                    <td>{{ student.user.get_full_name }}</td>
+                                    <td>{{ student.user.email }}</td>
+                                    <td>{{ student.enrollment_number|default:"-" }}</td>
+                                    <td>{{ student.cpf|default:"-" }}</td>
+                                    <td>{{ student.get_status_display }}</td>
+                                    <td>
+                                        <a href="{% url 'admin_panel:student_edit' student.id %}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{% url 'admin_panel:student_delete' student.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted text-center">Nenhum aluno encontrado</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

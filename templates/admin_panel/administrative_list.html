@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Equipe Administrativa{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Equipe Administrativa</h2>
+    <a href="{% url 'admin_panel:administrative_create' %}" class="btn btn-success">Novo Perfil</a>
+  </div>
+  <div class="card"><div class="card-body">
+    <table class="table table-hover">
+      <thead><tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Situação</th></tr></thead>
+      <tbody>
+      {% for admin in admins %}
+        <tr>
+          <td>{{ admin.user.get_full_name|default:admin.user.username }}</td>
+          <td>{{ admin.user.email }}</td>
+          <td>{{ admin.get_role_display }}</td>
+          <td>{% if admin.is_active %}Ativo{% else %}Inativo{% endif %}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">Nenhum perfil administrativo cadastrado.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div></div>
+</div>
+{% endblock %}

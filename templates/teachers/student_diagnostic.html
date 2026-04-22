@@ -1,0 +1,40 @@
+{% extends 'teachers/base.html' %}
+
+{% block page_title %}Diagnóstico do Aluno{% endblock %}
+
+{% block teacher_content %}
+<div class="t-card">
+  <div class="t-card__header">
+    <h2 class="t-card__title">
+      {{ student.user.get_full_name|default:student.user.username|default:student }} — Diagnóstico
+    </h2>
+    <a class="t-btn t-btn--ghost" href="{% url 'teachers:student_feedback' student.id %}">Enviar feedback</a>
+  </div>
+  <div class="t-card__body">
+    <div class="t-empty">
+      Este diagnóstico é inicial e usa apenas dados existentes (matrículas). Para rendimento por notas/entregas,
+      será necessário existir um model de avaliações/entregas.
+    </div>
+
+    <h3 style="margin-top:16px; margin-bottom:10px;">Disciplinas matriculadas</h3>
+    {% if enrollments %}
+      <ul class="t-list">
+        {% for e in enrollments %}
+          {% if e.course %}
+            <li class="t-list__item">
+              <div class="t-list__main">
+                <div class="t-list__title">{{ e.course.nome|default:e.course.name|default:e.course }}</div>
+              </div>
+              <div class="t-list__actions">
+                <a class="t-btn t-btn--ghost" href="{% url 'teachers:course_students' e.course.id %}">Ver turma</a>
+              </div>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="t-empty">Nenhuma matrícula encontrada para este aluno.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

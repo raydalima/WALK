@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Professores (Geral)</h1>
+<a href="{% url 'admin_panel:relatorio_professores_geral_csv' %}" class="btn btn-secondary">Exportar CSV</a>
+<ul>
+  {% for prof in professores %}
+    <li>{{ prof.user.get_full_name|default:prof.user.username }} ({{ prof.user.email }})
+      <a href="{% url 'admin_panel:ficha_professor' prof.id %}" class="btn btn-sm btn-info">Ver ficha</a>
+    </li>
+  {% empty %}
+    <li>Nenhum professor cadastrado.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

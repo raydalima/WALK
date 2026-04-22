@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Pré-cadastros{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-lines-fill text-primary"></i> Pré-cadastros</h2>
+    <a href="{% url 'admin_panel:matricula_create' %}" class="btn btn-success">Nova Matrícula</a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+        <div class="col-md-8">
+          <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Buscar por nome, e-mail, telefone ou curso pretendido">
+        </div>
+        <div class="col-md-2">
+          <select name="reviewed" class="form-select">
+            <option value="">Todos</option>
+            <option value="nao" {% if reviewed_filter == 'nao' %}selected{% endif %}>Pendentes</option>
+            <option value="sim" {% if reviewed_filter == 'sim' %}selected{% endif %}>Analisados</option>
+          </select>
+        </div>
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      {% if preregistrations %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Candidato</th>
+                <th>Contato</th>
+                <th>Curso pretendido</th>
+                <th>Perfil socioeconômico</th>
+                <th>Situação</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for preregistration in preregistrations %}
+                <tr>
+                  <td>
+                    <strong>{{ preregistration.name }}</strong>
+                    <div class="small text-muted">{{ preregistration.created_at|date:"d/m/Y H:i" }}</div>
+                  </td>
+                  <td>
+                    <div>{{ preregistration.email }}</div>
+                    <div class="small text-muted">{{ preregistration.phone|default:"Sem telefone" }}</div>
+                  </td>
+                  <td>{{ preregistration.intended_course|default:"Não informado" }}</td>
+                  <td>
+                    <div class="small">Renda: {{ preregistration.get_family_income_range_display|default:"-" }}</div>
+                    <div class="small">Internet: {{ preregistration.get_has_internet_at_home_display|default:"-" }}</div>
+                    <div class="small">Trabalha: {{ preregistration.get_works_currently_display|default:"-" }}</div>
+                  </td>
+                  <td>
+                    {% if preregistration.is_reviewed %}
+                      <span class="badge bg-success">Analisado</span>
+                    {% else %}
+                      <span class="badge bg-warning text-dark">Pendente</span>
+                    {% endif %}
+                  </td>
+                  <td class="d-flex gap-2 flex-wrap">
+                    {% if not preregistration.is_reviewed %}
+                      <a href="{% url 'admin_panel:pre_registration_review' preregistration.id %}" class="btn btn-sm btn-outline-primary">Marcar analisado</a>
+                    {% endif %}
+                    <a href="{% url 'admin_panel:matricula_create' %}?pre_registration={{ preregistration.id }}" class="btn btn-sm btn-primary">Usar na matrícula</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted text-center mb-0">Nenhum pré-cadastro encontrado.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
